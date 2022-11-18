@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+set(APP_NAME lcd_lib)
+
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 set(PICO_SDK_PATH "/home/nte/pico/pico-sdk")
@@ -18,35 +20,31 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.4.0")
   message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.4.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
-project(sgl_lcd_lib C CXX ASM)
+project(${APP_NAME} C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
+add_subdirectory(sgl)
 
-add_executable(sgl_lcd_lib sgl_lcd_lib.c )
+add_executable(${APP_NAME} sgl_lcd_lib.c )
+target_link_libraries(${APP_NAME}
+  sgl_lib,
+  pico_stdlib,
+  hardware_spi)
 
-pico_set_program_name(sgl_lcd_lib "sgl_lcd_lib")
-pico_set_program_version(sgl_lcd_lib "0.1")
+pico_set_program_name(${APP_NAME} "lcd_lib")
+pico_set_program_version(${APP_NAME} "0.1")
 
-pico_enable_stdio_uart(sgl_lcd_lib 1)
-pico_enable_stdio_usb(sgl_lcd_lib 1)
-
-# Add the standard library to the build
-target_link_libraries(sgl_lcd_lib
-        pico_stdlib)
+pico_enable_stdio_uart(${APP_NAME} 1)
+pico_enable_stdio_usb(${APP_NAME} 1)
 
 # Add the standard include files to the build
-target_include_directories(sgl_lcd_lib PRIVATE
+target_include_directories(${APP_NAME} INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}
   ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
 )
 
-# Add any user requested libraries
-target_link_libraries(sgl_lcd_lib
-        hardware_spi
-        )
-
-pico_add_extra_outputs(sgl_lcd_lib)
+pico_add_extra_outputs(${APP_NAME})
 
