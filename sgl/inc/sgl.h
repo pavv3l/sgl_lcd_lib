@@ -15,6 +15,9 @@
 #define WHITE 0xFFFF
 #define BLACK 0x0000
 
+#define UINT16TMAX(a, b) ((a < b) ? b : a)
+#define UINT16TMIN(a, b) ((b < a) ? b : a)
+
 namespace sgl
 {
     enum class Mode: uint8_t
@@ -50,17 +53,17 @@ namespace sgl
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         // line with length 0 == nothing, line with length 1 == one pixel
         //virtual void drawLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        
+    protected:
         // for faster drawing you should override these functions (horizonatal and vertical line)
-        virtual void drawHorizontalLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+        virtual void drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         //virtual void drawHorizontalLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         
-        virtual void drawVerticalLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+        virtual void drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         //virtual void drawVerticalLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-
-        virtual void drawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+    public:
+        virtual void drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         //virtual void drawRectangle(const Coord& coord0, const Coord& coord1,
         //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
