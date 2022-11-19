@@ -5,7 +5,10 @@
 // framerate should be adjusted to the display size and the communication speed with the mcu
 #define FRAMERATE 25
 
-void SGL::drawLine(onst uint16_t x0, const uint16_t y0, const uint16_t x1, const uint16_t y1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAnd)
+namespace sgl
+{
+
+void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t color, const Mode mode)
 {
     if(x0 >= _width)
         x0 = _width - 1;
@@ -16,16 +19,18 @@ void SGL::drawLine(onst uint16_t x0, const uint16_t y0, const uint16_t x1, const
     if(y1 >= _height)
         y1 = _height - 1;
 
-    uint16_t dx = std::abs(x0 - x1);
-    uint16_t dy = std::abs(y0 - y1);
+    uint16_t dx = abs(x0 - x1);
+    uint16_t dy = abs(y0 - y1);
+    //uint16_t dx;
+    //uint16_t dy;
 
     if(dx == 0)
     {
-        drawHorizontalLine(coord0, coord1, color, mode);
+        drawHorizontalLine(x0, y0, x1, y1, color, mode);
     }
     if(dy == 0)
     {
-        drawVerticalLine(coord0, coord1, color, mode);
+        drawVerticalLine(x0, y0, x1, y1, color, mode);
     }
 
     // signs of x and y axes
@@ -63,4 +68,6 @@ void SGL::drawLine(onst uint16_t x0, const uint16_t y0, const uint16_t x1, const
             d += dx;
         }
     }
+}
+
 }

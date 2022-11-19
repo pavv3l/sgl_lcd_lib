@@ -26,13 +26,8 @@ project(${APP_NAME} C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-add_subdirectory(sgl)
 
 add_executable(${APP_NAME} sgl_lcd_lib.c )
-target_link_libraries(${APP_NAME}
-  sgl_lib,
-  pico_stdlib,
-  hardware_spi)
 
 pico_set_program_name(${APP_NAME} "lcd_lib")
 pico_set_program_version(${APP_NAME} "0.1")
@@ -40,11 +35,26 @@ pico_set_program_version(${APP_NAME} "0.1")
 pico_enable_stdio_uart(${APP_NAME} 1)
 pico_enable_stdio_usb(${APP_NAME} 1)
 
+target_link_libraries(${APP_NAME}
+  pico_stdlib)
+
+#target_link_libraries(${APP_NAME}
+#  sgl_lib)
+
+  #add_subdirectory(sgl)
+
+
 # Add the standard include files to the build
-target_include_directories(${APP_NAME} INTERFACE
+target_include_directories(${APP_NAME} PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
   ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
 )
 
+target_link_libraries(${APP_NAME}
+        hardware_spi
+        )
+
 pico_add_extra_outputs(${APP_NAME})
+
+add_subdirectory(sgl)
 
