@@ -169,4 +169,15 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
     }
 }
 
+void SGL::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t x2, const uint16_t y2, const uint16_t color, const Fill fill, const Mode mode)
+{
+    ;
+}
+        
+void SGL::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t color, const Fill fill, const Mode mode)
+{
+    ;
+}
+            
+
 }

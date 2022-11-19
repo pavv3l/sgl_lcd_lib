@@ -69,11 +69,11 @@ namespace sgl
         //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         
         virtual void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
-            const uint16_t x2, const uint16_t y2, const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
+            uint16_t x2, uint16_t y2, const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         //virtual void drawTriangle(const Coord& coord0, const Coord& coord1, const Coord& coord2,
         //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         
-        virtual void drawCircle(uint16_t x0, uint16_t y0, const uint16_t radius,
+        virtual void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         //virtual void drawCircle(const Coord& coord, const uint16_t radius,
         //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
