@@ -8,6 +8,7 @@ using namespace sgl;
 class SGL_TEST: public SGL
 {
 public:
+    SGL_TEST(uint16_t x_, uint16_t y_) : SGL(x_, y_) {}
     void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND)
     {
         switch (mode)
@@ -65,7 +66,7 @@ public:
 
 TEST(DRAW_PIXEL, SGLTESTS_DRAW)
 {
-    SGL_TEST sglUT;
+    SGL_TEST sglUT(10,10);
     sglUT.drawPixel(0,0);
     EXPECT_EQ(sglUT.buffer[0][0],WHITE);
 }

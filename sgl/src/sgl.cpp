@@ -6,6 +6,7 @@
 #define FRAMERATE 25
 
 #define CHECK_LINE_PARAMETRS
+#define CHECK_PIXEL_PAPARATERS
 
 
 namespace sgl
@@ -79,6 +80,17 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
 
 void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
+#ifdef CHECK_LINE_PARAMETRS
+    if((x0 + len) > _width )
+    {
+        len = _width - x0;
+    }
+    else if((x0 + len) < 0)
+    {
+        len = -x0;
+    }
+#endif
+
     if(len > 0)
     {
         for(int16_t i = 0; i < len; ++i)
@@ -101,6 +113,17 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
 
 void SGL::drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
+#ifdef CHECK_LINE_PARAMETRS
+    if((y0 + len) > _height )
+    {
+        len = _width - y0;
+    }
+    else if((y0 + len) < 0)
+    {
+        len = -y0;
+    }
+#endif
+
     if(len > 0)
     {
         for(int16_t i = 0; i < len; ++i)
@@ -171,12 +194,83 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
 
 void SGL::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t x2, const uint16_t y2, const uint16_t color, const Fill fill, const Mode mode)
 {
-    ;
+
+    // the drawLine function checks the argunents
+    /*
+    if(x0 >= _width)
+        x0 = _width - 1;
+    if(x1 >= _width)
+        x1 = _width -1;
+    if(x2 >= _width)
+        x2 = _width -1;
+    if(y0 >= _height)
+        y0 = _height - 1;
+    if(y1 >= _height)
+        y1 = _height - 1;
+    if(y2 >= _height)
+        y2 = _height - 1;
+    */
+
+    // if transparent, just draw outline
+    if(fill == Fill::hole)
+    {
+        drawLine(x0, y0, x1, y1, color, mode);
+        drawLine(x1, y1, x2, y2, color, mode);
+        drawLine(x2, y2, x0, y0, color, mode);
+    }
+    else
+    {
+        // not implemented yet, draw outline only
+        drawLine(x0, y0, x1, y1, color, mode);
+        drawLine(x1, y1, x2, y2, color, mode);
+        drawLine(x2, y2, x0, y0, color, mode);
+    }
 }
         
 void SGL::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t color, const Fill fill, const Mode mode)
 {
-    ;
+    if(radius <= 0)
+        return;
+    // from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+
+    int16_t x = radius;
+    int16_t y = 0;
+    int16_t radiusError = 1 -x;
+
+    while (x >= y)
+    {
+
+        // if transparent, just draw outline
+        if (fill == Fill::hole)
+        {
+            drawPixel( x + x0,  y + y0, color, mode);
+            drawPixel(-x + x0,  y + y0, color, mode);
+            drawPixel( y + x0,  x + y0, color, mode);
+            drawPixel(-y + x0,  x + y0, color, mode);
+            drawPixel(-y + x0, -x + y0, color, mode);
+            drawPixel( y + x0, -x + y0, color, mode);
+            drawPixel( x + x0, -y + y0, color, mode);
+            drawPixel(-x + x0, -y + y0, color, mode);
+        }
+        else
+        { // drawing filled circle, so draw lines between points at same y value
+            drawLine(x + x0,  y + y0, -x + x0,  y + y0, color, mode);
+            drawLine(y + x0,  x + y0, -y + x0,  x + y0, color, mode);
+            drawLine(y + x0, -x + y0, -y + x0, -x + y0, color, mode);
+            drawLine(x + x0, -y + y0, -x + x0, -y + y0, color, mode);
+        }
+
+        y++;
+        if (radiusError < 0)
+        {
+            radiusError += 2 * y + 1;
+        }
+        else
+        {
+            x--;
+            radiusError += 2 * (y - x) + 1;
+        }
+    }
 }
             
 

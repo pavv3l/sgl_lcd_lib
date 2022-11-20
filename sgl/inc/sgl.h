@@ -12,11 +12,38 @@
 // 12 bit color 4k colors (frame buffer 240x320 = 115,2kB)
 #define RGB444(r,g,b) (((uint16_t)r & 0x00F0 << 8) | ((uint16_t)g & && 0x00F0 << 4) | ((uint16_t)b & && 0x00F0 >> 4))
 
-#define WHITE 0xFFFF
-#define BLACK 0x0000
+// define 16bit(RGB565) colors
+#define WHITE          0xFFFF
+#define BLACK          0x0000
+#define BLUE           0x001F
+#define BRED           0XF81F
+#define GRED           0XFFE0
+#define GBLUE          0X07FF
+#define RED            0xF800
+#define MAGENTA        0xF81F
+#define GREEN          0x07E0
+#define CYAN           0x7FFF
+#define YELLOW         0xFFE0
+#define BROWN          0XBC40
+#define BRRED          0XFC07
+#define GRAY           0X8430
 
 #define UINT16TMAX(a, b) ((a < b) ? b : a)
 #define UINT16TMIN(a, b) ((b < a) ? b : a)
+
+// for futher implementation
+// DOT_PIXEL
+//enum class DOT_PIXEL
+//{
+//    DOT1x1 = 0x01,
+//    DOT2x2 = 0x02,
+//    DOT3x3 = 0x03,
+//    DOT4x4 = 0x04,
+//    DOT5x5 = 0x05,
+//    DOT6x6 = 0x06,
+//    DOT7x7 = 0x07,
+//    DOT8x8 = 0x08
+//}
 
 namespace sgl
 {
@@ -46,39 +73,39 @@ namespace sgl
     class SGL
     {
     public:
+        SGL(uint16_t x, uint16_t y): _width(x), _height(y) {}
+        virtual ~SGL() {}
+
         virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) = 0;
-        //virtual void drawPixel(const Coord& coord, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) = 0;
         
         virtual void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        // line with length 0 == nothing, line with length 1 == one pixel
-        //virtual void drawLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-    protected:
-        // for faster drawing you should override these functions (horizonatal and vertical line)
+
         virtual void drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        //virtual void drawHorizontalLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         
         virtual void drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        //virtual void drawVerticalLine(const Coord& coord0, const Coord& coord1, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-    public:
+
         virtual void drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        //virtual void drawRectangle(const Coord& coord0, const Coord& coord1,
-        //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         
         virtual void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             uint16_t x2, uint16_t y2, const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        //virtual void drawTriangle(const Coord& coord0, const Coord& coord1, const Coord& coord2,
-        //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
         
         virtual void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        //virtual void drawCircle(const Coord& coord, const uint16_t radius,
-        //    const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
 
     protected:
+    /*
+        void drawFastPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
+        void drawFastHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
+            const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
+        void drawFastVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
+            const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
+    */
+
+
         uint16_t _width;
         uint16_t _height;
     };
