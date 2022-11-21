@@ -15,14 +15,14 @@ namespace sgl
 void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t color, const Mode mode)
 {
 #ifdef CHECK_LINE_PARAMETRS
-    if(x0 >= _width)
-        x0 = _width - 1;
-    if(x1 >= _width)
-        x1 = _width - 1;
-    if(y0 >= _height)
-        y0 = _height - 1;
-    if(y1 >= _height)
-        y1 = _height - 1;
+    if(x0 >= width_)
+        x0 = width_ - 1;
+    if(x1 >= width_)
+        x1 = width_ - 1;
+    if(y0 >= height_)
+        y0 = height_ - 1;
+    if(y1 >= height_)
+        y1 = height_ - 1;
 #endif
 
     uint16_t dx = abs(x0 - x1);
@@ -81,9 +81,9 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
 void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
 #ifdef CHECK_LINE_PARAMETRS
-    if((x0 + len) > _width )
+    if((x0 + len) > width_ )
     {
-        len = _width - x0;
+        len = width_ - x0;
     }
     else if((x0 + len) < 0)
     {
@@ -114,9 +114,9 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
 void SGL::drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
 #ifdef CHECK_LINE_PARAMETRS
-    if((y0 + len) > _height )
+    if((y0 + len) > height_ )
     {
-        len = _width - y0;
+        len = width_ - y0;
     }
     else if((y0 + len) < 0)
     {
@@ -197,18 +197,18 @@ void SGL::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const
 
     // the drawLine function checks the argunents
     /*
-    if(x0 >= _width)
-        x0 = _width - 1;
-    if(x1 >= _width)
-        x1 = _width -1;
-    if(x2 >= _width)
-        x2 = _width -1;
-    if(y0 >= _height)
-        y0 = _height - 1;
-    if(y1 >= _height)
-        y1 = _height - 1;
-    if(y2 >= _height)
-        y2 = _height - 1;
+    if(x0 >= width_)
+        x0 = width_ - 1;
+    if(x1 >= width_)
+        x1 = width_ -1;
+    if(x2 >= width_)
+        x2 = width_ -1;
+    if(y0 >= height_)
+        y0 = height_ - 1;
+    if(y1 >= height_)
+        y1 = height_ - 1;
+    if(y2 >= height_)
+        y2 = height_ - 1;
     */
 
     // if transparent, just draw outline

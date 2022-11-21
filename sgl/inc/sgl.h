@@ -73,7 +73,7 @@ namespace sgl
     class SGL
     {
     public:
-        SGL(uint16_t x, uint16_t y): _width(x), _height(y) {}
+        SGL(uint16_t x, uint16_t y): width_(x), height_(y) {}
         virtual ~SGL() {}
 
         virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) = 0;
@@ -106,8 +106,8 @@ namespace sgl
     */
 
 
-        uint16_t _width;
-        uint16_t _height;
+        uint16_t width_;
+        uint16_t height_;
     };
 
 }
