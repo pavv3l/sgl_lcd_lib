@@ -95,6 +95,8 @@ public:
     // backlight level, 0 means power off, 100 means power max, 1-99 by PWM Control
     //void setBackLight(uint8_t level);
     void reset();
+    void drawScreen();
+    void setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 protected:
     spi_inst_t* spi_ = nullptr;
     uint MOSI_  = 0;

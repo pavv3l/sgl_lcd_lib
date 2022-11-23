@@ -129,7 +129,7 @@ void SGL_ST8779VW::sendData8(uint8_t data)
     gpio_put(DC_, 1);
     gpio_put(CS_, 0);
     spi_write_blocking(spi_, &data, 1);
-    pio_put(CS_, 1);
+    gpio_put(CS_, 1);
 }
 void SGL_ST8779VW::sendData16(uint16_t data)
 {
@@ -137,7 +137,28 @@ void SGL_ST8779VW::sendData16(uint16_t data)
     gpio_put(CS_, 0);
     spi_write_blocking(spi_, &((data >> 8) & 0xFF), 1);
     spi_write_blocking(spi_, &(data & 0xFF), 1);
-    pio_put(CS_, 1);
+    gpio_put(CS_, 1);
+}
+
+void SGL_ST8779VW::drawScreen()
+{
+    setActiveWindow(0, 0, width_ - 1, height_ - 1);
+    gpio_put(DC_, 1);
+    gpio_put(CS_, 0);
+    //spi_write16_blocking(spi_, buffer, width_ * height_);
+    gpio_put(CS_, 1);
+
+}
+
+void SGL_ST8779VW::setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+    sendCommand8(0x2A);
+    sendData16(x0);
+    sendData16(x1);
+    sendCommand8(0x2B);
+    sendData16(y0);
+    sendData16(y1);
+    sendCommand8(0x2C);
 }
 
 }
