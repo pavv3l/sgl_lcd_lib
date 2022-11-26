@@ -19,9 +19,6 @@ hardware_spi
 hardware_timer
 hardware_clocks)
 
-pico_enable_stdio_uart(${LIB_NAME} 0)
-pico_enable_stdio_usb(${LIB_NAME} 1)
-
 if(${BUILD_UT})
 #add_subdirectory(ut)
 endif()

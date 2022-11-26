@@ -97,7 +97,15 @@ public:
     void reset();
     void drawScreen();
     void setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    void enableTearing(bool enable);
+    void enableSleep(bool enable);
+    void setColRowStart(int8_t col, int8_t row);
+    void enableDisplay(bool enable);
 protected:
+    uint16_t colstart_ = 0;
+    uint16_t rowstart_ = 0;
+    uint16_t colstart_2_ = 0; // offset from the right
+    uint16_t rowstart_2_ = 0; // offset from the bottom
     spi_inst_t* spi_ = nullptr;
     uint MOSI_  = 0;
     uint MISO_  = 0;
@@ -106,11 +114,13 @@ protected:
     uint DC_    = 0;
     uint RST_   = 0;
     uint BLK_   = 0;
+    uint8_t rotation_ = 0;
     void setPosition(ScanDir dir);
     void initReg();
     void sendCommand8(uint8_t command);
     void sendData8(uint8_t data);
     void sendData16(uint16_t data);
+    void setRotation(uint8_t rot = 0);
     //void startDataWrite();
     //void startCommandWrite();
     //void stopDataWrite();
@@ -119,3 +129,10 @@ protected:
 
 }
 }
+
+
+
+/*
+Note for VSYNC for (maybe?) further implementation
+
+*/

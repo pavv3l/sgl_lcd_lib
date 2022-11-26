@@ -30,6 +30,7 @@
 
 #define UINT16TMAX(a, b) ((a < b) ? b : a)
 #define UINT16TMIN(a, b) ((b < a) ? b : a)
+#define SWAP(T, a, b) {T tmp = a; a = b; b = tmp;}
 
 // for futher implementation
 // DOT_PIXEL
@@ -104,10 +105,11 @@ namespace sgl
         void drawFastVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
     */
-
-
+        uint8_t buffer_[240*135*2] = {0};
         uint16_t width_;
         uint16_t height_;
+        uint16_t x_start_ = 0; // x offset
+        uint16_t y_start_ = 0; // y offset
     };
 
 }
