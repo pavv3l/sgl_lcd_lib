@@ -7,11 +7,7 @@ namespace st8779vw
 
 void SGL_ST8779VW::drawPixel(uint16_t x, uint16_t y, const uint16_t color, const Mode mode)
 {
-    buffer_[y * width_ + x] = color;
-    //unsigned addr = y * width_ + x;
-    //buffer_[addr] = color;
-    //setActiveWindow(x, y, x, y);
-    //sendData16(color);
+    buffer_[y * 240 + x] = color;
 }
 
 void SGL_ST8779VW::init(ScanDir dir)
@@ -19,7 +15,11 @@ void SGL_ST8779VW::init(ScanDir dir)
     reset();
     setPosition(dir);
     initReg();
-
+    for(int i = 0; i < 240*240; ++i)
+    {
+      buffer_[i] = GREEN;
+    }
+/*
     if (width_ == 240 && height_ == 240) {
     // 1.3", 1.54" displays (right justified)
     rowstart_ = (320 - height_);
@@ -38,17 +38,22 @@ void SGL_ST8779VW::init(ScanDir dir)
     rowstart_ = rowstart_2_ = (int)((320 - height_) / 2);
     colstart_ = colstart_2_ = (int)((240 - width_) / 2);
     }
+*/
 }
 
 void SGL_ST8779VW::setPosition(ScanDir dir)
 {
     if(dir == ScanDir::Horizontal)
     {
+        //x_start_=40;
+        //y_start_=53;
+        x_start_ = 00;
         sendCommand8(ST77XX_MADCTL);
         sendData8(0X70);
     }
     else
     {
+        x_start_=52; y_start_=40;
         std::swap(width_, height_);
         sendCommand8(ST77XX_MADCTL);
         sendData8(0X00);
@@ -57,8 +62,10 @@ void SGL_ST8779VW::setPosition(ScanDir dir)
 
 void SGL_ST8779VW::initReg()
 {
-    sendCommand8(0x3A);
-    sendData8(0x05);
+    sendCommand8(ST77XX_COLMOD);
+    sendData8(0x05);// for 16 bit, 65k colors RGB 565
+    // 0x03 // for 12 bit, 4k color RGB 444
+    // 0x06 // for 18 bit, 262 color RGB 666
 
     sendCommand8(0xB2);
     sendData8(0x0C);
@@ -158,42 +165,49 @@ void SGL_ST8779VW::sendData16(uint16_t data)
 {
     gpio_put(DC_, 1);
     gpio_put(CS_, 0);
-    /*
+    
     uint8_t data1, data2;
     data1 = (data >> 8) & 0xFF;
     data2 = data & 0xFF;
     spi_write_blocking(spi_, &data1, 1);
     spi_write_blocking(spi_, &data2, 1);
-    */
-   spi_write16_blocking(spi_, &data, 1);
+    
+   //spi_write16_blocking(spi_, &data, 1);
     gpio_put(CS_, 1);
 }
 
 void SGL_ST8779VW::drawScreen()
 {
-    setActiveWindow(0, 0, width_ - 1, height_ - 1);
+  setActiveWindow(0, 0, width_ - 1, height_ - 1);
     gpio_put(DC_, 1);
     gpio_put(CS_, 0);
-    spi_write_blocking(spi_, buffer_, width_ * height_ * 2);
+    uint8_t* ptr = (uint8_t*)buffer_;
+    for(int i = 0; i < height_; ++i)
+    {
+      spi_write_blocking(spi_, ptr, width_ * 2);
+      ptr += width_ * 2;
+    }
     gpio_put(CS_, 1);
     sendCommand8(0x29);
-
 }
 
 void SGL_ST8779VW::setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
-    x0 += x_start_;
-    x1 += x_start_;
-    y0 += y_start_;
-    y1 += y_start_;
-
-    sendCommand8(0x2A);
+    sendCommand8(ST77XX_CASET);
     sendData16(x0);
     sendData16(x1);
-    sendCommand8(0x2B);
+    sendCommand8(ST77XX_RASET);
     sendData16(y0);
     sendData16(y1);
-    sendCommand8(0x2C);
+    sendCommand8(ST77XX_RAMWR);
+}
+
+void SGL_ST8779VW::fillScreen(uint16_t color)
+{
+  for(int i = 0; i < 240 * 240; ++i)
+  {
+      buffer_[i] = color;
+  }
 }
 
 /**************************************************************************/

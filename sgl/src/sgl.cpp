@@ -128,14 +128,14 @@ void SGL::drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t
     {
         for(int16_t i = 0; i < len; ++i)
         {
-            drawPixel(x0, y0 + 1, color, mode);
+            drawPixel(x0, y0 + i, color, mode);
         }
     }
     else if(len < 0)
     {
         for(int16_t i = 0; i > len; --i)
         {
-            drawPixel(x0, y0 + 1, color, mode);
+            drawPixel(x0, y0 + i, color, mode);
         }
     }
     else

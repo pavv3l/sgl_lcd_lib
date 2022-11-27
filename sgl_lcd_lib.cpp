@@ -31,21 +31,21 @@ int main()
     stdio_init_all();
 
     init_spi();
-    init_buttons_1_14();
+    init_buttons_1_3();
 
     gpio_init(LCD_BL);
     gpio_set_dir(LCD_BL, GPIO_OUT);
     gpio_put(LCD_BL, 1);
 
-    sgl::st8779vw::SGL_ST8779VW lcd(240, 135, spi1, LCD_CS, LCD_DC, LCD_RST);
+    sgl::st8779vw::SGL_ST8779VW lcd(240, 240, spi1, LCD_CS, LCD_DC, LCD_RST);
     lcd.init();
-    uint16_t col = RED;
-    lcd.drawRectangle(80, 80, 120, 120, RED, sgl::Fill::solid);
+    uint16_t col = GREEN;
     while(true)
     {
-    lcd.drawScreen();
-    lcd.drawRectangle(80, 80, 120, 120, col + 100, sgl::Fill::solid);
-    sleep_ms(2000);
+        lcd.fillScreen(col);
+        col += 1;
+        lcd.drawScreen();
+        //sleep_ms(200);
     }
 
     return 0;
@@ -78,7 +78,7 @@ void init_buttons_1_3()
 
 void init_spi()
 {
-    spi_init(spi1, 1000*1000);
+    spi_init(spi1, 5000*1000);
     gpio_set_function(LCD_CLK, GPIO_FUNC_SPI);
     gpio_set_function(LCD_DIN, GPIO_FUNC_SPI);
 
