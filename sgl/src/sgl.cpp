@@ -152,6 +152,7 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
     int16_t dx = x1 - x0;
     int16_t dy = y1 - y0;
 
+    /*
     if(dx == 0)
     {
         drawVerticalLine(x0, y0, (y1 - y0 + 1), color, mode);
@@ -162,6 +163,7 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
         drawHorizontalLine(x0, y0, (x1 - x0 + 1), color, mode);
         return;
     }
+     */
 
     if(fill == Fill::solid)
     {
@@ -169,16 +171,19 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
         {
             //horizontal
             int16_t len = x1 - x0 + 1;
-            for(uint16_t i = x0; i <= x1; ++i)
+            for(uint16_t i = y0; i <= y1; ++i)
             {
-                drawHorizontalLine(i, y0, len, color,mode);
+                drawHorizontalLine(x0, i, len, color,mode);
             }
         }
         else
         {   
             //vertical
             int16_t len = y1 - y0 + 1;
-            drawVerticalLine(x0, y0, len, color, mode);
+            for(uint16_t i = x0; i <= x1; ++i)
+            {
+                drawVerticalLine(i, y0, len, color,mode);
+            }
         }
     }
     else
@@ -195,7 +200,7 @@ void SGL::drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t heigh
 void SGL::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t x2, const uint16_t y2, const uint16_t color, const Fill fill, const Mode mode)
 {
 
-    // the drawLine function checks the argunents
+    // the drawLine function checks the arguments
     /*
     if(x0 >= width_)
         x0 = width_ - 1;

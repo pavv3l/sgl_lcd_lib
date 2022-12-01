@@ -1,4 +1,5 @@
 #include "sgl.h"
+#include "orientation.h"
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
@@ -115,12 +116,6 @@ namespace sgl
 namespace st8779vw
 {
 
-  enum class ScanDir: uint8_t
-  {
-    Horizontal = 0x00,
-    Vertical = 0x01
-  };
-
 class SGL_ST8779VW: public SGL
 {
 public:
@@ -129,7 +124,7 @@ public:
     SGL_ST8779VW(uint16_t w, uint16_t h, spi_inst_t* spi, uint CS, uint DC, uint RST) : SGL(w, h), spi_(spi), CS_(CS), DC_(DC), RST_(RST) {}
     SGL_ST8779VW(uint16_t w, uint16_t h, spi_inst_t* spi, uint CS, uint DC, uint RST, uint BLK) : SGL(w, h), spi_(spi), CS_(CS), DC_(DC), RST_(RST), BLK_(BLK) {}
     void drawPixel(uint16_t w, uint16_t h, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) override;
-    void init(ScanDir dir = ScanDir::Horizontal);
+    void init(ScanDir dir = ScanDir::HORIZONTAL);
     // backlight level, 0 means power off, 100 means power max, 1-99 by PWM Control
     //void setBackLight(uint8_t level);
     void reset();

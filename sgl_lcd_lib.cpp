@@ -38,14 +38,27 @@ int main()
     gpio_put(LCD_BL, 1);
 
     sgl::st8779vw::SGL_ST8779VW lcd(240, 240, spi1, LCD_CS, LCD_DC, LCD_RST);
-    lcd.init();
-    uint16_t col = GREEN;
+    lcd.init(sgl::st8779vw::ScanDir::HORIZONTAL);
+    uint16_t col = RED;
+    uint8_t green = 0;
+    uint8_t red = 0;
     while(true)
     {
-        lcd.fillScreen(col);
-        col += 1;
+        lcd.fillScreen(WHITE);
+        lcd.drawVerticalLine(20,50, 100, col);
+        lcd.drawRectangle(50, 50, 20, 150, col, sgl::Fill::solid);
+        lcd.drawRectangle(50, 140, 50, 20, col, sgl::Fill::solid);
+        lcd.drawRectangle(50, 180, 80, 20, col, sgl::Fill::solid);
         lcd.drawScreen();
-        //sleep_ms(200);
+        col += 5;
+        //sleep_ms(1000);
+        for(int i = 0; i < 240; i+=3)
+        {
+            lcd.drawRectangle(0, 0, i, i, col, sgl::Fill::hole);
+        }
+        lcd.drawScreen();
+        col += 5;
+        //sleep_ms(1000);
     }
 
     return 0;
@@ -78,7 +91,7 @@ void init_buttons_1_3()
 
 void init_spi()
 {
-    spi_init(spi1, 5000*1000);
+    spi_init(spi1, 200*1000);
     gpio_set_function(LCD_CLK, GPIO_FUNC_SPI);
     gpio_set_function(LCD_DIN, GPIO_FUNC_SPI);
 

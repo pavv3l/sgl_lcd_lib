@@ -15,34 +15,69 @@ void SGL_ST8779VW::init(ScanDir dir)
     reset();
     setPosition(dir);
     initReg();
-    for(int i = 0; i < 240*240; ++i)
-    {
-      buffer_[i] = GREEN;
-    }
-/*
-    if (width_ == 240 && height_ == 240) {
-    // 1.3", 1.54" displays (right justified)
-    rowstart_ = (320 - height_);
-    rowstart_2_ = 0;
-    colstart_ = colstart_2_ = (240 - width_);
-    } else if (width_ == 135 && height_ == 240) {
-    // 1.14" display (centered, with odd size)
-    rowstart_ = rowstart_2_ = (int)((320 - height_) / 2);
-    // This is the only device currently supported device that has different
-    // values for _colstart & _colstart2. You must ensure that the extra
-    // pixel lands in _colstart and not in _colstart2
-    colstart_ = (int)((240 - width_ + 1) / 2);
-    colstart_2_ = (int)((240 - width_) / 2);
-    } else {
-    // 1.47", 1.69, 1.9", 2.0" displays (centered)
-    rowstart_ = rowstart_2_ = (int)((320 - height_) / 2);
-    colstart_ = colstart_2_ = (int)((240 - width_) / 2);
-    }
-*/
+    fillScreen(WHITE);
 }
 
 void SGL_ST8779VW::setPosition(ScanDir dir)
 {
+    uint8_t madctl = 0;
+    sendCommand8(ST77XX_MADCTL);
+    switch(dir)
+    {
+        case(ScanDir::VERTICAL):
+            madctl = ST77XX_MADCTL_MX;
+            x_start_ = 0;
+            y_start_ = 0;
+            break;
+        case(ScanDir::VERTICAL_REVERSED):
+            madctl = ST77XX_MADCTL_MY;
+            x_start_ = 0;
+            y_start_ = 80;
+            break;
+        case(ScanDir::HORIZONTAL):
+            madctl = ST77XX_MADCTL_MV;
+            x_start_ = 0;
+            y_start_ = 0;
+            break;
+        case(ScanDir::HORIZONTAL_REVERSED):
+            break;
+        case(ScanDir::VERTICAL_MIRROR_X):
+            break;
+        case(ScanDir::VERTICAL_REVERSED_MIRROR_X):
+            madctl = ST77XX_MADCTL_MX | ST77XX_MADCTL_MY;
+            x_start_ = 0;
+            y_start_ = 80;
+            break;
+        case(ScanDir::HORIZONTAL_X_MIRROR_Y):
+            break;
+        case(ScanDir::VERTICAL_MIRROR_X_Y):
+            break;
+        default:
+            break;
+    }
+    sendData8(madctl);
+    //sendData8(0X0000); // dul przy klawiszach/ gora yoistick, (0,0) top left, odsw gora -> dol
+    
+    //madctl = ST77XX_MADCTL_MV; // lewa strona przy yoysticku, prawa przy klawiszach, odsw dół - góra (0,0) lewa dol
+    //y_start_ = 0;
+    //x_start_ = 0;
+
+    //madctl = ST77XX_MADCTL_MX; // dol przy yoysticku, gora klawisze | (0,0) dol lewy | odswiezanie dol - gora
+    //y_start_ = 80;
+    //x_start_ = 80;
+
+    //madctl = ST77XX_MADCTL_MX | ST77XX_MADCTL_MV; // dol przy yoysticku, gora klawisze | (0,0) dol prawy | odswiezanie dol - gora
+    //y_start_ = 80;
+    //x_start_ = 80;
+
+    //madctl = ST77XX_MADCTL_MY  | ST77XX_MADCTL_MV; // dol przy yoysticku, gora klawisze | (0,0) dol prawy | odswiezanie dol - gora
+    //y_start_ = 80;
+    //x_start_ = 80;
+
+    //madctl = ST77XX_MADCTL_MY; // dol przy yoysticku, gora klawisze | (0,0) dol prawy | odswiezanie dol - gora
+    //y_start_ = 80;
+    //x_start_ = 80;
+  /*
     if(dir == ScanDir::Horizontal)
     {
         //x_start_=40;
@@ -53,11 +88,12 @@ void SGL_ST8779VW::setPosition(ScanDir dir)
     }
     else
     {
-        x_start_=52; y_start_=40;
-        std::swap(width_, height_);
+        //x_start_=52; y_start_=40;
+        //std::swap(width_, height_);
         sendCommand8(ST77XX_MADCTL);
         sendData8(0X00);
     }
+    */
 }
 
 void SGL_ST8779VW::initReg()
@@ -193,6 +229,10 @@ void SGL_ST8779VW::drawScreen()
 
 void SGL_ST8779VW::setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
+    x0 += x_start_;
+    x1 += x_start_;
+    y0 += y_start_;
+    y1 += y_start_;
     sendCommand8(ST77XX_CASET);
     sendData16(x0);
     sendData16(x1);
@@ -263,29 +303,29 @@ void SGL_ST8779VW::setRotation(uint8_t rot)
   {
   case 0:
     madctl = ST77XX_MADCTL_MX | ST77XX_MADCTL_MY | ST77XX_MADCTL_RGB;
-    x_start_ = colstart_;
-    y_start_ = rowstart_;
+    //x_start_ = colstart_;
+    //y_start_ = rowstart_;
     //width_ = windowWidth;
     //height_ = windowHeight;
     break;
   case 1:
     madctl = ST77XX_MADCTL_MY | ST77XX_MADCTL_MV | ST77XX_MADCTL_RGB;
-    x_start_ = rowstart_;
-    y_start_ = colstart_2_;
+    //x_start_ = rowstart_;
+    //y_start_ = colstart_2_;
     //height_ = windowWidth;
     //width_ = windowHeight;
     break;
   case 2:
     madctl = ST77XX_MADCTL_RGB;
-    x_start_ = colstart_2_;
-    y_start_ = rowstart_2_;
+    //x_start_ = colstart_2_;
+    //y_start_ = rowstart_2_;
     //width_ = windowWidth;
     //height_ = windowHeight;
     break;
   case 3:
     madctl = ST77XX_MADCTL_MX | ST77XX_MADCTL_MV | ST77XX_MADCTL_RGB;
-    x_start_ = rowstart_2_;
-    y_start_ = colstart_;
+    //x_start_ = rowstart_2_;
+    //y_start_ = colstart_;
     //height_ = windowWidth;
     //width_ = windowHeight;
     break;
