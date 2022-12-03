@@ -53,19 +53,11 @@ int main()
     uint16_t col = RED;
     uint8_t green = 0;
     uint8_t red = 0;
+    repeating_timer_t timer;
+    add_repeating_timer_ms(10000,timer_callback, NULL, &timer );
 
     while(true)
     {
-        repeating_timer_t timer;
-        add_repeating_timer_ms(10000,timer_callback, NULL, &timer );
-        while(true)
-        {
-            for(int i = 0; i < 100000; ++i)
-            {
-                lcd.fillScreen(GREEN);
-                ++counter;
-            }
-        }
         lcd.fillScreen(WHITE);
         lcd.drawVerticalLine(20,50, 100, col);
         lcd.drawRectangle(50, 50, 20, 150, col, sgl::Fill::solid);
