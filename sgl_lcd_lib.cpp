@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "sgl_st8779vw.h"
+#include "time.h"
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -22,12 +23,22 @@
 #define LCD_RIGHT   20
 #define LCD_CTRL    3
 
+unsigned long counter;
+
 void init_buttons_1_14();
 void init_buttons_1_3();
 void init_spi();
 
+bool timer_callback(repeating_timer_t *rt)
+{
+    printf("LICZNIK: %u\n", counter);
+    counter = 0;
+}
+
 int main()
 {
+    counter = 0;
+
     stdio_init_all();
 
     init_spi();
@@ -38,12 +49,23 @@ int main()
     gpio_put(LCD_BL, 1);
 
     sgl::st8779vw::SGL_ST8779VW lcd(240, 240, spi1, LCD_CS, LCD_DC, LCD_RST);
-    lcd.init(sgl::st8779vw::ScanDir::HORIZONTAL);
+    lcd.init(sgl::st8779vw::ScanDir::VERTICAL);
     uint16_t col = RED;
     uint8_t green = 0;
     uint8_t red = 0;
+
     while(true)
     {
+        repeating_timer_t timer;
+        add_repeating_timer_ms(10000,timer_callback, NULL, &timer );
+        while(true)
+        {
+            for(int i = 0; i < 100000; ++i)
+            {
+                lcd.fillScreen(GREEN);
+                ++counter;
+            }
+        }
         lcd.fillScreen(WHITE);
         lcd.drawVerticalLine(20,50, 100, col);
         lcd.drawRectangle(50, 50, 20, 150, col, sgl::Fill::solid);

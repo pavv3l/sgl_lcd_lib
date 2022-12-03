@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <utility>
+//#ifdef SGL_USE_BUFFER
+#include <string.h>
+//#endif
 //#include <cstdint> // c++ version of stdint.h
 
 // macros definitions for color converting
@@ -48,6 +51,26 @@
 //    DOT8x8 = 0x08
 //}
 
+#define SGL_USE_BUFFER
+
+inline void memset16(void *m, uint16_t val, size_t count)
+{
+    uint16_t* buf = (uint16_t*)m;
+    while(count--) *(buf++) = val;
+}
+
+inline void memset16_fast(void *m, uint16_t val, size_t count)
+{
+    uint32_t* buf = (uint32_t*)m;
+    uint32_t val32 = val << 16 | val;
+    size_t count32 = count / 2;
+    while(count32--)
+        *(buf++) = val32;
+    if(count % 2)
+        *buf = val;
+}
+
+
 namespace sgl
 {
     enum class Mode: uint8_t
@@ -76,10 +99,23 @@ namespace sgl
     class SGL
     {
     public:
-        SGL(uint16_t x, uint16_t y): width_(x), height_(y) {}
-        virtual ~SGL() {}
+        SGL(uint16_t x, uint16_t y): width_(x), height_(y)
+        {
+#ifdef SGL_USE_BUFFER
+            buffer_ = (uint16_t*)malloc(width_ * height_ * sizeof(uint16_t));
+            bufferSize = width_ * height_;
+#endif
+        }
+        virtual ~SGL()
+        {
+#ifdef SGL_USE_BUFFER
+            free(buffer_);
+#endif
+        }
 
         virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) = 0;
+
+        virtual void drawScreen() = 0;
         
         virtual void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
@@ -99,19 +135,26 @@ namespace sgl
         virtual void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
 
+        uint16_t getXOffset() const;
+        void setXOffset(uint16_t xStart);
+        uint16_t getYOffset() const;
+        void setYOffset(uint16_t yStart);
+
     protected:
-    /*
-        void drawFastPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        void drawFastHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
-            const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        void drawFastVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
-            const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-    */
-        uint16_t buffer_[240*240] = {0x0000};
-        uint16_t width_;
-        uint16_t height_;
+#ifdef SGL_USE_BUFFER
+        uint16_t* buffer_ = nullptr;
+        unsigned bufferSize;
+#endif
+        uint16_t width_ = 0;
+        uint16_t height_ = 0;
         uint16_t x_start_ = 0; // x offset
         uint16_t y_start_ = 0; // y offset
+        // there is no need to actualise whole display every time, so we have these helpers variables
+        // for further implementation
+        uint16_t y_act1 = 0;
+        uint16_t x_act2 = 0;
+        uint16_t x_act1 = 0;
+        uint16_t y_act2 = 0;
     };
 
 }

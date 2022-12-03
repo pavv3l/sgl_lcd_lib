@@ -4,9 +4,10 @@
 #define USE_FRAME_BUFFER
 // framerate should be adjusted to the display size and the communication speed with the mcu
 #define FRAMERATE 25
-
-#define CHECK_LINE_PARAMETRS
 #define CHECK_PIXEL_PAPARATERS
+#define CHECK_LINE_PARAMETRS
+
+#undef CHECK_LINE_PARAMETRS
 
 
 namespace sgl
@@ -93,17 +94,26 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
 
     if(len > 0)
     {
+#ifdef SGL_USE_BUFFER
+        memset16_fast((buffer_ + y0 * height_ + x0), color, len * sizeof(uint16_t));
+#else
         for(int16_t i = 0; i < len; ++i)
         {
             drawPixel(x0 + i, y0, color, mode);
         }
+#endif
     }
     else if(len < 0)
     {
+#ifdef SGL_USE_BUFFER
+        len = abs(len);
+        memset16_fast((buffer_ + y0 * height_ + x0 - len), color, len * sizeof(uint16_t));
+#else
         for(int16_t i = 0; i > len; --i)
         {
             drawPixel(x0 + i, y0, color, mode);
         }
+#endif
     }
     else
     {
@@ -277,6 +287,26 @@ void SGL::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t c
         }
     }
 }
-            
+
+uint16_t SGL::getXOffset() const
+{
+        return x_start_;
+}
+
+void SGL::setXOffset(uint16_t xStart)
+{
+        x_start_ = xStart;
+}
+
+uint16_t SGL::getYOffset() const
+{
+        return y_start_;
+}
+
+void SGL::setYOffset(uint16_t yStart)
+{
+        y_start_ = yStart;
+}
+
 
 }
