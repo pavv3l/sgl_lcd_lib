@@ -4,10 +4,6 @@
 #define USE_FRAME_BUFFER
 // framerate should be adjusted to the display size and the communication speed with the mcu
 #define FRAMERATE 25
-#define CHECK_PIXEL_PAPARATERS
-#define CHECK_LINE_PARAMETRS
-
-#undef CHECK_LINE_PARAMETRS
 
 
 namespace sgl
@@ -35,11 +31,11 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
 
     if(dx == 0)
     {
-        drawVerticalLine(x0, y0, (y1 - y0 + y_mult), color, mode);
+        drawVerticalLine(x0, y0, (y1 - y0), color, mode);
     }
     if(dy == 0)
     {
-        drawHorizontalLine(x0, y0, (x1 - x0 + x_mult), color, mode);
+        drawHorizontalLine(x0, y0, (x1 - x0), color, mode);
     }
 
     // positive slope
@@ -95,7 +91,7 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
     if(len > 0)
     {
 #ifdef SGL_USE_BUFFER
-        memset16_fast((buffer_ + y0 * height_ + x0), color, len * sizeof(uint16_t));
+        memset16_fast((buffer_ + y0 * height_ + x0), color, len + 1);
 #else
         for(int16_t i = 0; i < len; ++i)
         {
@@ -107,7 +103,7 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
     {
 #ifdef SGL_USE_BUFFER
         len = abs(len);
-        memset16_fast((buffer_ + y0 * height_ + x0 - len), color, len * sizeof(uint16_t));
+        memset16_fast((buffer_ + y0 * height_ + x0 - len), color, len + 1);
 #else
         for(int16_t i = 0; i > len; --i)
         {
@@ -260,19 +256,25 @@ void SGL::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t c
         {
             drawPixel( x + x0,  y + y0, color, mode);
             drawPixel(-x + x0,  y + y0, color, mode);
+
             drawPixel( y + x0,  x + y0, color, mode);
             drawPixel(-y + x0,  x + y0, color, mode);
+
             drawPixel(-y + x0, -x + y0, color, mode);
             drawPixel( y + x0, -x + y0, color, mode);
+
             drawPixel( x + x0, -y + y0, color, mode);
             drawPixel(-x + x0, -y + y0, color, mode);
         }
         else
         { // drawing filled circle, so draw lines between points at same y value
-            drawLine(x + x0,  y + y0, -x + x0,  y + y0, color, mode);
-            drawLine(y + x0,  x + y0, -y + x0,  x + y0, color, mode);
-            drawLine(y + x0, -x + y0, -y + x0, -x + y0, color, mode);
-            drawLine(x + x0, -y + y0, -x + x0, -y + y0, color, mode);
+            drawLine(-x + x0,  y + y0, x + x0,  y + y0, color, mode);
+
+            drawLine(-y + x0,  x + y0, y + x0,  x + y0, color, mode);
+
+            drawLine(-y + x0, -x + y0, y + x0, -x + y0, color, mode);
+
+            drawLine(-x + x0, -y + y0, x + x0, -y + y0, color, mode);
         }
 
         y++;

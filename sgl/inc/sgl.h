@@ -11,7 +11,8 @@
 
 // macros definitions for color converting
 // 16 bit color 65k clors (frame buffer 240x320 = 153,6kB)
-#define RGB565(r,g,b) ((((uint16_t)r & 0x00F8) << 8) | (((uint16_t)g & 0x00FC) << 3) | (((uint16_t)b & 0x00F8) >> 3))
+#define RGB565(r,g,b) (((r & 0x00F8) << 8) | ((g & 0x00FC) << 3) | ((b & 0x00F8) >> 3)) // range(255,255,255)
+#define ST77XXCOLOR(a) ((a<<8)&0xff00)|(a>>8)
 // 12 bit color 4k colors (frame buffer 240x320 = 115,2kB)
 #define RGB444(r,g,b) (((uint16_t)r & 0x00F0 << 8) | ((uint16_t)g & && 0x00F0 << 4) | ((uint16_t)b & && 0x00F0 >> 4))
 
@@ -20,7 +21,7 @@
 #define BLACK          0x0000
 #define BLUE           0x001F
 #define BRED           0XF81F
-#define GRED           0XFFE0
+#define GREN           0XFFE0
 #define GBLUE          0X07FF
 #define RED            0xF800
 #define MAGENTA        0xF81F
@@ -52,6 +53,8 @@
 //}
 
 #define SGL_USE_BUFFER
+#define CHECK_PIXEL_PAPARATERS
+#define CHECK_LINE_PARAMETRS
 
 inline void memset16(void *m, uint16_t val, size_t count)
 {
@@ -59,7 +62,7 @@ inline void memset16(void *m, uint16_t val, size_t count)
     while(count--) *(buf++) = val;
 }
 
-inline void memset16_fast(void *m, uint16_t val, size_t count)
+inline void memset16_fast(uint16_t* m, uint16_t val, size_t count)
 {
     uint32_t* buf = (uint32_t*)m;
     uint32_t val32 = val << 16 | val;
@@ -67,7 +70,7 @@ inline void memset16_fast(void *m, uint16_t val, size_t count)
     while(count32--)
         *(buf++) = val32;
     if(count % 2)
-        *buf = val;
+        *(uint16_t*)buf = val;
 }
 
 
@@ -145,8 +148,8 @@ namespace sgl
         uint16_t* buffer_ = nullptr;
         unsigned bufferSize;
 #endif
-        uint16_t width_ = 0;
-        uint16_t height_ = 0;
+        const uint16_t width_;
+        const uint16_t height_;
         uint16_t x_start_ = 0; // x offset
         uint16_t y_start_ = 0; // y offset
         // there is no need to actualise whole display every time, so we have these helpers variables

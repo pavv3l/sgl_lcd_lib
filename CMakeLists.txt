@@ -43,9 +43,10 @@ pico_enable_stdio_uart(${APP_NAME} 0)
 pico_enable_stdio_usb(${APP_NAME} 1)
 
 target_link_libraries(${APP_NAME} PUBLIC
-pico_stdlib
-sgl_lib_st7789vw
-hardware_spi)
+        pico_stdlib
+        sgl_lib_st7789vw
+        hardware_spi
+        pico_multicore)
 
 pico_add_extra_outputs(lcd_lib)
 

@@ -260,13 +260,14 @@ void SGL_ST8779VW::setActiveWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16
 
 void SGL_ST8779VW::fillScreen(uint16_t color)
 {
-    /*
+/*
     for(int i = 0; i < bufferSize; ++i)
     {
         buffer_[i] = color;
     }
-     */
+*/
 #ifdef SGL_USE_BUFFER
+    color = ST77XXCOLOR(color);
     memset16_fast(buffer_, color, bufferSize);
 #endif
 }

@@ -24,16 +24,15 @@
 #define LCD_CTRL    3
 
 unsigned long counter;
+bool led = false;
 
 void init_buttons_1_14();
 void init_buttons_1_3();
 void init_spi();
 
-bool timer_callback(repeating_timer_t *rt)
-{
-    printf("LICZNIK: %u\n", counter);
-    counter = 0;
-}
+bool timer_callback(repeating_timer_t *rt);
+
+void core1_entry();
 
 int main()
 {
@@ -51,28 +50,26 @@ int main()
     sgl::st8779vw::SGL_ST8779VW lcd(240, 240, spi1, LCD_CS, LCD_DC, LCD_RST);
     lcd.init(sgl::st8779vw::ScanDir::VERTICAL);
     uint16_t col = RED;
-    uint8_t green = 0;
-    uint8_t red = 0;
-    repeating_timer_t timer;
-    add_repeating_timer_ms(10000,timer_callback, NULL, &timer );
+    //repeating_timer_t timer;
+    //add_repeating_timer_ms(500,timer_callback, NULL, &timer );
+    gpio_init(25);
+    gpio_set_dir(25, GPIO_OUT);
+    lcd.fillScreen(MAGENTA);
+    lcd.drawScreen();
+
+    //multicore_launch_core1(core1_entry);
 
     while(true)
     {
-        lcd.fillScreen(WHITE);
-        lcd.drawVerticalLine(20,50, 100, col);
-        lcd.drawRectangle(50, 50, 20, 150, col, sgl::Fill::solid);
-        lcd.drawRectangle(50, 140, 50, 20, col, sgl::Fill::solid);
-        lcd.drawRectangle(50, 180, 80, 20, col, sgl::Fill::solid);
+        lcd.fillScreen(BLUE);
+        gpio_put(25, 1);
+        lcd.drawTriangle(1,1, 20, 30, 50,20, col, sgl::Fill::solid);
+        lcd.drawCircle(150,150,100,col,sgl::Fill::hole);
+        lcd.drawRectangle(200,50,120,120,col,sgl::Fill::solid);
         lcd.drawScreen();
-        col += 5;
-        //sleep_ms(1000);
-        for(int i = 0; i < 240; i+=3)
-        {
-            lcd.drawRectangle(0, 0, i, i, col, sgl::Fill::hole);
-        }
-        lcd.drawScreen();
-        col += 5;
-        //sleep_ms(1000);
+        col += 6243;
+        gpio_put(25, 0);
+        sleep_ms(2000);
     }
 
     return 0;
@@ -120,4 +117,14 @@ void init_spi()
     gpio_init(LCD_RST);
     gpio_set_dir(LCD_RST, GPIO_OUT);
     gpio_put(LCD_RST, 0);
+}
+
+bool timer_callback(repeating_timer_t *rt)
+{
+    ;
+}
+
+void core1_entry()
+{
+    ;
 }
