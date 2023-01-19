@@ -268,7 +268,7 @@ void SGL_ST8779VW::fillScreen(uint16_t color)
 */
 #ifdef SGL_USE_BUFFER
     color = ST77XXCOLOR(color);
-    memset16_fast(buffer_, color, bufferSize);
+    memset16(buffer_, color, bufferSize);
 #endif
 }
 

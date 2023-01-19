@@ -1,7 +1,5 @@
 #include "sgl.h"
 
-// you shuld use it only if you have enough memory
-#define USE_FRAME_BUFFER
 // framerate should be adjusted to the display size and the communication speed with the mcu
 #define FRAMERATE 25
 
@@ -33,13 +31,13 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
     {
         drawVerticalLine(x0, y0, (y1 - y0), color, mode);
     }
-    if(dy == 0)
+     else if(dy == 0)
     {
         drawHorizontalLine(x0, y0, (x1 - x0), color, mode);
     }
 
     // positive slope
-    if(dy < dx)
+    else if(dy < dx)
     {
         int16_t d = (2 * dy) - dx;
         uint16_t y = 0;
@@ -54,7 +52,7 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
             d += dy;
         }
     }
-    else // negative slope
+    else if(dy > dx) // negative slope
     {
         int16_t d = (2 * dx) - dy;
         uint16_t x = 0;
@@ -69,7 +67,7 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
             d += dx;
         }
     }
-    if(dx == dy)
+    else if(dx == dy)
     {
         drawPixel(x0, y0, color, mode);
     }
@@ -77,24 +75,27 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
 
 void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
+    std::cout << "TEST drawHorizontalLine x0: " << x0 << " y0: " << y0 << " len: " << len << " \n";
 #ifdef CHECK_LINE_PARAMETRS
-    if((x0 + len) > width_ )
+    if((x0 + len) >= width_ )
     {
-        len = width_ - x0;
+        len = width_ - x0 - 1;
     }
     else if((x0 + len) < 0)
     {
         len = -x0;
     }
 #endif
+    std::cout << "TEST drawHorizontalLine CHECK_LINE_PARAMETRS len: " << len << "\n";
 
     if(len > 0)
     {
 #ifdef SGL_USE_BUFFER
-        memset16_fast((buffer_ + y0 * height_ + x0), color, len + 1);
+        memset16((buffer_ + y0 * height_ + x0), color, len + 1);
 #else
         for(int16_t i = 0; i < len; ++i)
         {
+            std::cout << "TEST drawHorizontalLine draw pixel\n";
             drawPixel(x0 + i, y0, color, mode);
         }
 #endif
@@ -103,7 +104,7 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
     {
 #ifdef SGL_USE_BUFFER
         len = abs(len);
-        memset16_fast((buffer_ + y0 * height_ + x0 - len), color, len + 1);
+        memset16((buffer_ + (y0 * height_ + x0 - len)), color, len + 1);
 #else
         for(int16_t i = 0; i > len; --i)
         {
@@ -255,6 +256,7 @@ void SGL::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t c
         if (fill == Fill::hole)
         {
             drawPixel( x + x0,  y + y0, color, mode);
+            drawPixel(-x + x0,  y + y0, color, mode);
             drawPixel(-x + x0,  y + y0, color, mode);
 
             drawPixel( y + x0,  x + y0, color, mode);

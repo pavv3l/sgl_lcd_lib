@@ -1,13 +1,21 @@
 #ifndef __SGL_H__
 #define __SGL_H__
 
-#include <stdint.h>
-#include <stdlib.h>
 #include <utility>
-//#ifdef SGL_USE_BUFFER
-#include <string.h>
-//#endif
-//#include <cstdint> // c++ version of stdint.h
+#include <stdlib.h>
+
+#ifdef PICO_BUILD
+#define SGL_USE_BUFFER
+#include "pico/stdlib.h"
+#else
+#include <cstdio>
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+#endif
+
+#define CHECK_PIXEL_PAPARATERS
+#define CHECK_LINE_PARAMETRS
 
 // macros definitions for color converting
 // 16 bit color 65k clors (frame buffer 240x320 = 153,6kB)
@@ -52,9 +60,6 @@
 //    DOT8x8 = 0x08
 //}
 
-#define SGL_USE_BUFFER
-#define CHECK_PIXEL_PAPARATERS
-#define CHECK_LINE_PARAMETRS
 
 inline void memset16(void *m, uint16_t val, size_t count)
 {
@@ -67,10 +72,12 @@ inline void memset16_fast(uint16_t* m, uint16_t val, size_t count)
     uint32_t* buf = (uint32_t*)m;
     uint32_t val32 = val << 16 | val;
     size_t count32 = count / 2;
-    while(count32--)
+    while(count32--) {
         *(buf++) = val32;
-    if(count % 2)
-        *(uint16_t*)buf = val;
+    }
+    if(count % 2) {
+        *(uint16_t *) buf = val;
+    }
 }
 
 

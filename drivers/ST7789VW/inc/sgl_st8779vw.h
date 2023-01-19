@@ -1,6 +1,5 @@
 #include "sgl.h"
 #include "orientation.h"
-#include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/timer.h"

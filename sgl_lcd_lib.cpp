@@ -63,13 +63,8 @@ int main()
     {
         lcd.fillScreen(BLUE);
         gpio_put(25, 1);
-        lcd.drawTriangle(1,1, 20, 30, 50,20, col, sgl::Fill::solid);
-        lcd.drawCircle(150,150,100,col,sgl::Fill::hole);
-        lcd.drawRectangle(200,50,120,120,col,sgl::Fill::solid);
-        lcd.drawScreen();
-        col += 6243;
-        gpio_put(25, 0);
         sleep_ms(2000);
+        gpio_put(25, 0);
     }
 
     return 0;
@@ -102,7 +97,7 @@ void init_buttons_1_3()
 
 void init_spi()
 {
-    spi_init(spi1, 200*1000);
+    spi_init(spi1, 400*1000);
     gpio_set_function(LCD_CLK, GPIO_FUNC_SPI);
     gpio_set_function(LCD_DIN, GPIO_FUNC_SPI);
 
