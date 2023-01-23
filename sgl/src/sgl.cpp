@@ -75,7 +75,6 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
 
 void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
-    std::cout << "TEST drawHorizontalLine x0: " << x0 << " y0: " << y0 << " len: " << len << " \n";
 #ifdef CHECK_LINE_PARAMETRS
     if((x0 + len) >= width_ )
     {
@@ -86,8 +85,6 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
         len = -x0;
     }
 #endif
-    std::cout << "TEST drawHorizontalLine CHECK_LINE_PARAMETRS len: " << len << "\n";
-
     if(len > 0)
     {
 #ifdef SGL_USE_BUFFER
@@ -95,7 +92,6 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
 #else
         for(int16_t i = 0; i < len; ++i)
         {
-            std::cout << "TEST drawHorizontalLine draw pixel\n";
             drawPixel(x0 + i, y0, color, mode);
         }
 #endif

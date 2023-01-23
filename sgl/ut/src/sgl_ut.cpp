@@ -4,6 +4,7 @@
 #include<vector>
 #include <vector>
 #include <memory>
+#include <string.h>
 
 using namespace sgl;
 using testing::_;
@@ -11,10 +12,12 @@ using testing::_;
 class SGL_TEST: public SGL
 {
 public:
-    SGL_TEST(uint16_t x_, uint16_t y_) : SGL(x_, y_) {}
-    void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND)
+    SGL_TEST(uint16_t x_, uint16_t y_) : SGL(x_, y_)
     {
+        int_buffer = (uint16_t*)malloc(sizeof(uint16_t) * width_ * height_);
+        memset(int_buffer, 0, sizeof(uint16_t) * width_ * height_);
     }
+    uint16_t* int_buffer;
 };
 
 
@@ -24,25 +27,52 @@ public:
     SGL_MOCK(uint16_t x_, uint16_t y_) : SGL(x_, y_) {}
     MOCK_METHOD(void, drawPixel,(uint16_t x, uint16_t y, const uint16_t color, const Mode mode), (override));
     MOCK_METHOD(void, drawScreen, (), (override));
-    //MOCK_METHOD(void, drawHorizontalLine, (uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode), (override));
-    //MOCK_METHOD(void, drawVerticalLine, (uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode), (override));
-    //MOCK_METHOD(void, drawRectangle, (uint16_t x0, uint16_t y0, uint16_t width, uint16_t height, const uint16_t color, const Fill fill, const Mode mode), (override));
-    //MOCK_METHOD(void, drawTriangle, (uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t color, const Fill fill, const Mode mode), (override));
-    //MOCK_METHOD(void, drawCircle, (uint16_t x0, uint16_t y0, uint16_t radius, const uint16_t color, const Fill fill, const Mode mode), (override));
 };
 
 TEST(DRAW, DRAWLINE_1)
 {
     SGL_MOCK sglMock(10, 10);
-    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    //EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    EXPECT_CALL(sglMock, drawPixel(0, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(1, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(2, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(3, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(4, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(5, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(6, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(7, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(8, 0, _, _));
     sglMock.drawLine(0, 0, 9, 0);
 }
 
 TEST(DRAW, DRAWLINE_2)
 {
     SGL_MOCK sglMock(10, 10);
+    //EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    EXPECT_CALL(sglMock, drawPixel(9, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(8, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(7, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(6, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(5, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(4, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(3, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(2, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(1, 0, _, _));
+    sglMock.drawLine(9, 0, 0, 0);
+}
+
+TEST(DRAW, DRAWLINE_3)
+{
+    SGL_MOCK sglMock(10, 10);
     EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
     sglMock.drawLine(9, 0, 0, 0);
+}
+
+TEST(DRAW, DRAWLINE_4)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    sglMock.drawLine(0, 0, 9, 9);
 }
 
 TEST(DRAW, drawHorizontalLine_1)
@@ -57,4 +87,43 @@ TEST(DRAW, drawHorizontalLine_2)
     SGL_MOCK sglMock(10, 10);
     EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
     sglMock.drawHorizontalLine(9, 0, -9);
+}
+
+TEST(DRAW, drawHorizontalLine_3)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    sglMock.drawHorizontalLine(9, 0, -11);
+}
+
+TEST(DRAW, drawVerticalLine_1)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    sglMock.drawVerticalLine(0, 0, 9);
+}
+
+TEST(DRAW, drawVerticalLine_2)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    sglMock.drawVerticalLine(0, 9, -9);
+}
+
+TEST(DRAW, drawVerticalLine_3)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(_, _, _, _)).Times(9);
+    sglMock.drawVerticalLine(0, 9, -10);
+}
+
+TEST(DRAW, drawVerticalLine_4)
+{
+    SGL_MOCK sglMock(10, 10);
+    EXPECT_CALL(sglMock, drawPixel(0, 0, _, _));
+    EXPECT_CALL(sglMock, drawPixel(0, 1, _, _));
+    EXPECT_CALL(sglMock, drawPixel(0, 2, _, _));
+    EXPECT_CALL(sglMock, drawPixel(0, 3, _, _));
+    EXPECT_CALL(sglMock, drawPixel(0, 4, _, _));
+    sglMock.drawVerticalLine(0, 0, 5);
 }
