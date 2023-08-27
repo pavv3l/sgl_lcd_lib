@@ -1,8 +1,5 @@
 #include "sgl.h"
 
-// framerate should be adjusted to the display size and the communication speed with the mcu
-#define FRAMERATE 25
-
 
 namespace sgl
 {
@@ -35,7 +32,6 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
     {
         drawHorizontalLine(x0, y0, (x1 - x0), color, mode);
     }
-
     // positive slope
     else if(dy < dx)
     {
@@ -73,6 +69,59 @@ void SGL::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uin
     }
 }
 
+void SGL::drawLine2(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const uint16_t color, const Mode mode)
+{
+#ifdef CHECK_LINE_PARAMETRS
+    if(x0 >= width_)
+        x0 = width_ - 1;
+    if(x1 >= width_)
+        x1 = width_ - 1;
+    if(y0 >= height_)
+        y0 = height_ - 1;
+    if(y1 >= height_)
+        y1 = height_ - 1;
+#endif
+
+    uint16_t dx = abs(x0 - x1);
+    uint16_t dy = abs(y0 - y1);
+
+    if(dx == 0)
+    {
+        drawVerticalLine(x0, y0, (y1 - y0), color, mode);
+    }
+     else if(dy == 0)
+    {
+        drawHorizontalLine(x0, y0, (x1 - x0), color, mode);
+    }
+
+    // signs of x and y axes
+    int8_t x_mult = (x0 < x1) ? 1 : -1;
+    int8_t y_mult = (y0 < y1) ? 1 : -1;
+    int16_t err = ((dx > dy) ? dx : -dy) / 2;
+    int16_t e2;
+
+    while (true)
+    {
+        drawPixel(x0, y0, color, mode);
+
+        if (x0 == x1 && y0 == y1) {
+            break;
+        };
+
+        e2 = err + err;
+
+        if (e2 > -dx) {
+            err -= dy;
+            x0 += x_mult;
+        }
+
+        if (e2 < dy) {
+            err += dx;
+            y0 += y_mult;
+        }
+    }
+}
+
 void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t color, const Mode mode)
 {
 #ifdef CHECK_LINE_PARAMETRS
@@ -90,7 +139,7 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
 #ifdef SGL_USE_BUFFER
         memset16((buffer_ + y0 * height_ + x0), color, len + 1);
 #else
-        for(int16_t i = 0; i < len; ++i)
+        for(int16_t i = 0; i <= len; ++i)
         {
             drawPixel(x0 + i, y0, color, mode);
         }
@@ -102,7 +151,7 @@ void SGL::drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16
         len = abs(len);
         memset16((buffer_ + (y0 * height_ + x0 - len)), color, len + 1);
 #else
-        for(int16_t i = 0; i > len; --i)
+        for(int16_t i = 0; i >= len; --i)
         {
             drawPixel(x0 + i, y0, color, mode);
         }
@@ -129,14 +178,14 @@ void SGL::drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len, const uint16_t
 
     if(len > 0)
     {
-        for(int16_t i = 0; i < len; ++i)
+        for(int16_t i = 0; i <= len; ++i)
         {
             drawPixel(x0, y0 + i, color, mode);
         }
     }
     else if(len < 0)
     {
-        for(int16_t i = 0; i > len; --i)
+        for(int16_t i = 0; i >= len; --i)
         {
             drawPixel(x0, y0 + i, color, mode);
         }
@@ -306,6 +355,175 @@ uint16_t SGL::getYOffset() const
 void SGL::setYOffset(uint16_t yStart)
 {
         y_start_ = yStart;
+}
+
+void SGL::drawChar(char c, uint16_t x, uint16_t y) // for the new font
+// bedzie problem z pusta linia po lewej znaku - w szerokosci fontu sie tego nie uwzglednia, a nie wszystkie znaki to maja
+// podsumowujac czasem jest, czasem nie ma pustej linii z lewej - nie ma informacji kiedy jest
+// trzeba by sprobowac rysowac je ze stala szerokoscia fontu, nie chara
+// lub cos usunac ta linie z char gdzie wystepuje i ja szcztucznie dorysowywac
+// w creatorze fontow mozna je wszystkie przysnapowac do lewej, nastepnie na podstawie szerokosci narysowac i dododac space z prawej
+// lub dodawac tylko w draw sring, chociaz chyba w draw char bedzie prosciej
+// moze stworzyc klase, strukture, statyczna strukture, jedna tabela zawiera tylko szerokosci znakow, druga zawiera bitmapy
+// od razu dodac wysokosc i ile bajtow wychodzi na kolumne
+{
+}
+
+void SGL::drawString(const unsigned char* c, uint16_t x, uint16_t y)
+{
+    uint lenstr = strlen(c);
+    for(int i = 0; i < lenstr ; ++c ++i) {
+        if(x > width_ - _font->get_char_width(*c-32) && _font->wrap == false)
+        {
+            return;
+        }
+        if(x > width_ - _font->get_char_width(*c-32))
+        {
+            y += _font->font_height;
+        }
+        if(*c > 126)
+        {
+            drawChar((char)127, x, y);
+        }
+        else
+        {
+            drawChar(*c, x, y);
+        }
+        x += _font->get_char_width(*c-32);
+    }
+}
+
+void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
+{
+    c -= _font->first_char;
+    //
+    SGLglyph *glyph = read_glyph(_font, c);
+    //
+    uint8_t *bitmap = _font->font_array;
+    uint16_t bo = glyph->bitmapOffset;
+    uint8_t w = glyph->width;
+    uint8_t h = glyph->height;
+    int8_t xo = glyph->xOffset;
+    int8_t yo = glyph->yOffset;
+    uint8_t xx, yy, bits = 0, bit = 0;
+    int16_t xo16 = 0, yo16 = 0;
+
+    if (size_x > 1 || size_y > 1) {
+      xo16 = xo;
+      yo16 = yo;
+    }
+
+
+    for (yy = 0; yy < h; yy++) {
+      for (xx = 0; xx < w; xx++) {
+        if (!(bit++ & 7)) {
+          bits = bitmap[bo++];
+        }
+        if (bits & 0x80) {
+          if (size_x == 1 && size_y == 1) {
+            drawPixel(x + xo + xx, y + yo + yy, color);
+          } else {
+            drawRectangle(x + (xo16 + xx) * size_x, y + (yo16 + yy) * size_y,
+                          size_x, size_y, color, Fill::solid);
+          }
+        }
+        bits <<= 1;
+      }
+    }
+
+
+
+
+    // Filter out bad characters not present in font
+    if ((c >= pgm_read_word(&gfxFont->first)) && (c <= pgm_read_word(&gfxFont->last ))) {
+      //begin_tft_write();          // Sprite class can use this function, avoiding begin_tft_write()
+      inTransaction = true;
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+      c -= pgm_read_word(&gfxFont->first);
+      GFXglyph *glyph  = &(((GFXglyph *)pgm_read_dword(&gfxFont->glyph))[c]);
+      uint8_t  *bitmap = (uint8_t *)pgm_read_dword(&gfxFont->bitmap);
+
+      uint32_t bo = pgm_read_word(&glyph->bitmapOffset);
+      uint8_t  w  = pgm_read_byte(&glyph->width),
+               h  = pgm_read_byte(&glyph->height);
+               //xa = pgm_read_byte(&glyph->xAdvance);
+      int8_t   xo = pgm_read_byte(&glyph->xOffset),
+               yo = pgm_read_byte(&glyph->yOffset);
+      uint8_t  xx, yy, bits=0, bit=0;
+      int16_t  xo16 = 0, yo16 = 0;
+
+      if(size > 1) {
+        xo16 = xo;
+        yo16 = yo;
+      }
+
+      // GFXFF rendering speed up
+      uint16_t hpc = 0; // Horizontal foreground pixel count
+      for(yy=0; yy<h; yy++)
+      {
+        for(xx=0; xx<w; xx++)
+        {
+          if(bit == 0)
+          {
+            bits = pgm_read_byte(&bitmap[bo++]);
+            bit  = 0x80;
+          }
+          if(bits & bit) hpc++;
+          else
+          {
+           if (hpc)
+           {
+              if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, color);
+              else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, color);
+              hpc=0;
+            }
+          }
+          bit >>= 1;
+        }
+        // Draw pixels for this line as we are about to increment yy
+        if (hpc) {
+          if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, color);
+          else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, color);
+          hpc=0;
+        }
+      }
+
+      inTransaction = lockTransaction;
+      end_tft_write();              // Does nothing if Sprite class uses this function
+    }
+}
+void SGL::drawString_2(const unsigned char* c, uint16_t x, uint16_t y)
+{
+    ;
+}
+
+void SGL::drawBitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+    // TO DO CHECK IF THIS IS CORRECT
+    if(x >= width_)
+        x = width_ - 1;
+    if(y >= height_)
+        y = height_ - 1;
+    if((x + width) >= width_)
+        width = width_ - x - 1;
+    if((y + height_) >= height_)
+        height = height_ - y - 1;
+    for(uint16_t i = 0; i <= width; i++)
+    {
+        for(uint16_t j = 0; j <= height; j++)
+        {
+            drawPixel(i + x, j + x, *(bitmap + i + j * width));
+        }
+    }
+}
+
+unsigned char SGL::reverseBytes(unsigned char b)
+{
+    b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+    b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+    b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+    return b;
 }
 
 

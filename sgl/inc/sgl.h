@@ -4,18 +4,23 @@
 #include <utility>
 #include <stdlib.h>
 
-#ifdef PICO_BUILD
 #define SGL_USE_BUFFER
-#include "pico/stdlib.h"
-#else
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
-#endif
+#include <string.h>
+#include "sgl_hal.h"
+#include "font.h"
 
 #define CHECK_PIXEL_PAPARATERS
 #define CHECK_LINE_PARAMETRS
+
+using uchar = unsigned char;
+
+
+/*
+* In the SGL library when we think about length e.g. width and height of a rectangle or the radius of a circle, lenght is simply the number of pixels.
+*/
 
 // macros definitions for color converting
 // 16 bit color 65k clors (frame buffer 240x320 = 153,6kB)
@@ -24,6 +29,7 @@
 // 12 bit color 4k colors (frame buffer 240x320 = 115,2kB)
 #define RGB444(r,g,b) (((uint16_t)r & 0x00F0 << 8) | ((uint16_t)g & && 0x00F0 << 4) | ((uint16_t)b & && 0x00F0 >> 4))
 
+#define ABS(x)  ((x) > 0 ? (x) : -(x))
 // define 16bit(RGB565) colors
 #define WHITE          0xFFFF
 #define BLACK          0x0000
@@ -43,8 +49,8 @@
 #define UINT16TMAX(a, b) ((a < b) ? b : a)
 #define UINT16TMIN(a, b) ((b < a) ? b : a)
 #define SWAP(T, a, b) {T tmp = a; a = b; b = tmp;}
-#define HIGHERBYTE(h) static_cast<int8_t>((h & 0xff00) >> 8)
-#define LOWERBYTE(l) static_cast<int8_t>(l & 0x00ff)
+#define HIGHERBYTE16(h) static_cast<int8_t>((h & 0xff00) >> 8)
+#define LOWERBYTE16(l) static_cast<int8_t>(l & 0x00ff)
 
 // for futher implementation
 // DOT_PIXEL
@@ -65,6 +71,13 @@ inline void memset16(void *m, uint16_t val, size_t count)
 {
     uint16_t* buf = (uint16_t*)m;
     while(count--) *(buf++) = val;
+    /*
+    while(count--)
+    {
+        *(buf) = val;
+        ++buf;
+    }
+    */
 }
 
 inline void memset16_fast(uint16_t* m, uint16_t val, size_t count)
@@ -109,7 +122,7 @@ namespace sgl
     class SGL
     {
     public:
-        SGL(uint16_t x, uint16_t y): width_(x), height_(y)
+        SGL(uint16_t x, uint16_t y, SGL_hal_interface* dev): width_(x), height_(y), dev_(dev)
         {
 #ifdef SGL_USE_BUFFER
             buffer_ = (uint16_t*)malloc(width_ * height_ * sizeof(uint16_t));
@@ -123,25 +136,20 @@ namespace sgl
 #endif
         }
 
-        virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) = 0;
-
+        virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, Mode mode = Mode::pixelAND) = 0;
         virtual void drawScreen() = 0;
-        
         virtual void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-
+        virtual void drawLine2(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+            const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
         virtual void drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        
         virtual void drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-
         virtual void drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        
         virtual void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             uint16_t x2, uint16_t y2, const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        
         virtual void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
 
@@ -150,6 +158,14 @@ namespace sgl
         uint16_t getYOffset() const;
         void setYOffset(uint16_t yStart);
 
+        unsigned char reverseBytes(unsigned char b);
+        void setFont(SGLFont* font) { _font = font; }
+        void drawChar(char c, uint16_t x, uint16_t y);
+        void drawString(const unsigned char* c, uint16_t x, uint16_t y);
+        void drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size);
+        void drawString_2(const unsigned char* c, uint16_t x, uint16_t y);
+        void drawBitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+
     protected:
 #ifdef SGL_USE_BUFFER
         uint16_t* buffer_ = nullptr;
@@ -157,14 +173,20 @@ namespace sgl
 #endif
         const uint16_t width_;
         const uint16_t height_;
+        SGL_hal_interface* dev_;
         uint16_t x_start_ = 0; // x offset
         uint16_t y_start_ = 0; // y offset
         // there is no need to actualise whole display every time, so we have these helpers variables
         // for further implementation
+        uint16_t x_act1 = 0;
         uint16_t y_act1 = 0;
         uint16_t x_act2 = 0;
-        uint16_t x_act1 = 0;
         uint16_t y_act2 = 0;
+
+        SGLFont* _font;
+
+        uint8_t getTextBounds(char c, uint16_t x, uint16_t y, int8_t size);
+        uint8_t getCharBounds(const char* c, uint16_t x, uint16_t y, uint8_t size);
     };
 
 }

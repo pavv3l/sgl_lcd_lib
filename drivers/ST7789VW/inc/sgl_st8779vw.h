@@ -1,3 +1,6 @@
+#ifndef __SGL_ST8779VW_H__
+#define __SGL_ST8779VW_H__
+
 #include "sgl.h"
 #include "orientation.h"
 #include "pico/stdlib.h"
@@ -118,10 +121,7 @@ namespace st8779vw
 class SGL_ST8779VW: public SGL
 {
 public:
-    SGL_ST8779VW(uint16_t w, uint16_t h, uint MOSI, uint MISO, uint CLK, uint CS, uint DC, uint RST) : SGL(w, h), MOSI_(MOSI), MISO_(MISO), CLK_(CLK), CS_(CS), DC_(DC), RST_(RST) {}
-    SGL_ST8779VW(uint16_t w, uint16_t h, uint MOSI, uint MISO, uint CLK, uint CS, uint DC, uint RST, uint BLK) : SGL(w, h), MOSI_(MOSI), MISO_(MISO), CLK_(CLK), CS_(CS), DC_(DC), RST_(RST), BLK_(BLK) {}
-    SGL_ST8779VW(uint16_t w, uint16_t h, spi_inst_t* spi, uint CS, uint DC, uint RST) : SGL(w, h), spi_(spi), CS_(CS), DC_(DC), RST_(RST) {}
-    SGL_ST8779VW(uint16_t w, uint16_t h, spi_inst_t* spi, uint CS, uint DC, uint RST, uint BLK) : SGL(w, h), spi_(spi), CS_(CS), DC_(DC), RST_(RST), BLK_(BLK) {}
+    SGL_ST8779VW(uint16_t w, uint16_t h, SGL_hal_interface* dev) : SGL(w, h, dev) {}
     void drawPixel(uint16_t w, uint16_t h, const uint16_t color = WHITE, const Mode mode = Mode::pixelAND) override;
     void init(ScanDir dir = ScanDir::HORIZONTAL);
     // backlight level, 0 means power off, 100 means power max, 1-99 by PWM Control
@@ -139,20 +139,10 @@ protected:
     uint16_t rowstart_ = 0;
     uint16_t colstart_2_ = 0; // offset from the right
     uint16_t rowstart_2_ = 0; // offset from the bottom
-    spi_inst_t* spi_ = nullptr;
-    uint MOSI_  = 0;
-    uint MISO_  = 0;
-    uint CLK_   = 0;
-    uint CS_    = 0;
-    uint DC_    = 0;
-    uint RST_   = 0;
-    uint BLK_   = 0;
+
     uint8_t rotation_ = 0;
     void setPosition(ScanDir dir);
     void initReg();
-    inline void sendCommand8(uint8_t command);
-    inline void sendData8(uint8_t data);
-    inline void sendData16(uint16_t data);
     void setRotation(uint8_t rot = 0);
 };
 
@@ -169,3 +159,5 @@ Because all the data for display is written to RAM, only the data to be rewritte
 This method reduces the amount of data transferred during motion picture display operation.
 
 */
+
+#endif

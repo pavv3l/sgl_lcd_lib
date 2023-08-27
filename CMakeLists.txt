@@ -32,6 +32,7 @@ else()
 pico_sdk_init()
 
 add_subdirectory(sgl)
+add_subdirectory(sgl_hal)
 add_subdirectory(drivers)
 
 add_executable(${APP_NAME} sgl_lcd_lib.cpp)
@@ -44,7 +45,8 @@ pico_enable_stdio_usb(${APP_NAME} 1)
 
 target_link_libraries(${APP_NAME} PUBLIC
         pico_stdlib
-        sgl_lib_st7789vw
+       #sgl_lib_st7789vw
+        sgl_lib_ini9341
         hardware_spi
         pico_multicore)
 

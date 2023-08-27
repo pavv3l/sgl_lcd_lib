@@ -1,5 +1,5 @@
 if(NOT {BUILD_UT})
-#add_subdirectory(ILI9341)
+add_subdirectory(ILI9341)
 #add_subdirectory(PCD8544)
-add_subdirectory(ST7789VW)
+#add_subdirectory(ST7789VW)
 endif()

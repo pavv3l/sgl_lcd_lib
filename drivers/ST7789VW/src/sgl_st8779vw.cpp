@@ -112,42 +112,42 @@ void SGL_ST8779VW::setPosition(ScanDir dir)
 
 void SGL_ST8779VW::initReg()
 {
-    sendCommand8(ST77XX_COLMOD);
-    sendData8(0x05);// for 16 bit, 65k colors RGB 565
+    dev_->sendCommand8(ST77XX_COLMOD, 1);
+    dev_->sendData8(0x05, 1);// for 16 bit, 65k colors RGB 565
     // 0x03 // for 12 bit, 4k color RGB 444
     // 0x06 // for 18 bit, 262 color RGB 666
 
-    sendCommand8(0xB2);
+    dev_->sendCommand8(0xB2, 1);
     sendData8(0x0C);
     sendData8(0x0C);
     sendData8(0x00);
     sendData8(0x33);
     sendData8(0x33);
 
-    sendCommand8(0xB7);  //Gate Control
+    dev_->sendCommand8(0xB7, 1);  //Gate Control
     sendData8(0x35);
 
-    sendCommand8(0xBB);  //VCOM Setting
+    dev_->sendCommand8(0xBB, 1);  //VCOM Setting
     sendData8(0x19);
 
-    sendCommand8(0xC0); //LCM Control     
+    dev_->sendCommand8(0xC0, 1); //LCM Control     
     sendData8(0x2C);
 
-    sendCommand8(0xC2);  //VDV and VRH Command Enable
+    dev_->sendCommand8(0xC2, 1);  //VDV and VRH Command Enable
     sendData8(0x01);
     sendCommand8(0xC3);  //VRH Set
     sendData8(0x12);
     sendCommand8(0xC4);  //VDV Set
     sendData8(0x20);
 
-    sendCommand8(0xC6);  //Frame Rate Control in Normal Mode
+    dev_->sendCommand8(0xC6, 1);  //Frame Rate Control in Normal Mode
     sendData8(0x0F);
     
-    sendCommand8(0xD0);  // Power Control 1
+    dev_->sendCommand8(0xD0, 1);  // Power Control 1
     sendData8(0xA4);
     sendData8(0xA1);
 
-    sendCommand8(0xE0);  //Positive Voltage Gamma Control
+    dev_->sendCommand8(0xE0, 1);  //Positive Voltage Gamma Control
     sendData8(0xD0);
     sendData8(0x04);
     sendData8(0x0D);
@@ -163,7 +163,7 @@ void SGL_ST8779VW::initReg()
     sendData8(0x1F);
     sendData8(0x23);
 
-    sendCommand8(0xE1);  //Negative Voltage Gamma Control
+    dev_->sendCommand8(0xE1, 1);  //Negative Voltage Gamma Control
     sendData8(0xD0);
     sendData8(0x04);
     sendData8(0x0C);
@@ -179,11 +179,11 @@ void SGL_ST8779VW::initReg()
     sendData8(0x20);
     sendData8(0x23);
 
-    sendCommand8(0x21);  //Display Inversion On
+    dev_->sendCommand8(0x21, 1);  //Display Inversion On
 
-    sendCommand8(0x11);  //Sleep Out
+    dev_->sendCommand8(0x11, 1);  //Sleep Out
 
-    sendCommand8(0x29);  //Display On
+    dev_->sendCommand8(0x29, 1);  //Display On
 }
 
 void SGL_ST8779VW::reset()

@@ -1,3 +1,8 @@
 build/
 pico_sdk_import.cmake
 external/
+cmake-build-debug/
+.vscode/settings.json
+hagl/
+.vscode/launch.json
+.vscode/settings.json

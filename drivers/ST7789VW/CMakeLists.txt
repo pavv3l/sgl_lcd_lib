@@ -13,12 +13,6 @@ target_include_directories(${LIB_NAME} PUBLIC inc)
 
 target_link_libraries(${LIB_NAME} PUBLIC sgl_lib)
 
-target_link_libraries(${LIB_NAME} PUBLIC
-pico_stdlib
-hardware_spi
-hardware_timer
-hardware_clocks)
-
 if(${BUILD_UT})
 #add_subdirectory(ut)
 endif()
