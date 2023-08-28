@@ -397,7 +397,7 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
 {
     c -= _font->first_char;
     //
-    SGLglyph *glyph = read_glyph(_font, c);
+    SGLglyph* glyph = _font->glyph[c];
     //
     uint8_t *bitmap = _font->font_array;
     uint16_t bo = glyph->bitmapOffset;
@@ -421,10 +421,10 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
         }
         if (bits & 0x80) {
           if (size_x == 1 && size_y == 1) {
-            drawPixel(x + xo + xx, y + yo + yy, color);
+            drawPixel(x + xo + xx, y + yo + yy, _font->color);
           } else {
             drawRectangle(x + (xo16 + xx) * size_x, y + (yo16 + yy) * size_y,
-                          size_x, size_y, color, Fill::solid);
+                          size_x, size_y, _font->color, Fill::solid);
           }
         }
         bits <<= 1;
@@ -435,10 +435,8 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
 
 
     // Filter out bad characters not present in font
-    if ((c >= pgm_read_word(&gfxFont->first)) && (c <= pgm_read_word(&gfxFont->last ))) {
-      //begin_tft_write();          // Sprite class can use this function, avoiding begin_tft_write()
-      inTransaction = true;
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    if ((c >= pgm_read_word(&gfxFont->first)) && (c <= pgm_read_word(&gfxFont->last )))
+    {
 
       c -= pgm_read_word(&gfxFont->first);
       GFXglyph *glyph  = &(((GFXglyph *)pgm_read_dword(&gfxFont->glyph))[c]);
@@ -474,8 +472,8 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
           {
            if (hpc)
            {
-              if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, color);
-              else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, color);
+              if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, _font->color);
+              else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, -font->color);
               hpc=0;
             }
           }
@@ -483,14 +481,11 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
         }
         // Draw pixels for this line as we are about to increment yy
         if (hpc) {
-          if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, color);
-          else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, color);
+          if(size == 1) drawFastHLine(x+xo+xx-hpc, y+yo+yy, hpc, _font->color);
+          else fillRect(x+(xo16+xx-hpc)*size, y+(yo16+yy)*size, size*hpc, size, _font->color);
           hpc=0;
         }
       }
-
-      inTransaction = lockTransaction;
-      end_tft_write();              // Does nothing if Sprite class uses this function
     }
 }
 void SGL::drawString_2(const unsigned char* c, uint16_t x, uint16_t y)

@@ -18,6 +18,7 @@ typedef struct { // Data stored for FONT AS A WHOLE:
 	SGLglyph *glyph;       // Glyph array
 	uint16_t  first, last; // ASCII extents
 	uint8_t   yAdvance;    // Newline distance (y axis)
+    uint16_t color;
 } SGLfont;
 
 class SGLFont
