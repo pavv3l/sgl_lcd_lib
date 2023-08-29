@@ -21,6 +21,7 @@ typedef struct { // Data stored for FONT AS A WHOLE:
     uint16_t color;
 } SGLfont;
 
+/*
 class SGLFont
 {
 private:
@@ -47,6 +48,7 @@ public:
     const uint8_t* font_array;
     bool wrap;          // wrap text to a new line?
 };
+*/
 
 } // namespace sgl
 

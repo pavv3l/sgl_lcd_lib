@@ -162,7 +162,8 @@ namespace sgl
         void setFont(SGLFont* font) { _font = font; }
         void drawChar(char c, uint16_t x, uint16_t y);
         void drawString(const unsigned char* c, uint16_t x, uint16_t y);
-        void drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size);
+        void drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y);
+        void drawChar_3(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y);
         void drawString_2(const unsigned char* c, uint16_t x, uint16_t y);
         void drawBitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 

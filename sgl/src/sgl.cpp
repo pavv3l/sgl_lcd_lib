@@ -393,7 +393,7 @@ void SGL::drawString(const unsigned char* c, uint16_t x, uint16_t y)
     }
 }
 
-void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
+void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y)
 {
     c -= _font->first_char;
     //
@@ -408,7 +408,8 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
     uint8_t xx, yy, bits = 0, bit = 0;
     int16_t xo16 = 0, yo16 = 0;
 
-    if (size_x > 1 || size_y > 1) {
+    if (size_x > 1 || size_y > 1)
+    {
       xo16 = xo;
       yo16 = yo;
     }
@@ -430,15 +431,16 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size)
         bits <<= 1;
       }
     }
+}
 
 
-
-
+void SGL::drawChar_3(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y)
+{
     // Filter out bad characters not present in font
-    if ((c >= pgm_read_word(&gfxFont->first)) && (c <= pgm_read_word(&gfxFont->last )))
+    if ((c >= _font->first_char) && (c <= _font->last_char))
     {
 
-      c -= pgm_read_word(&gfxFont->first);
+      c -= _font->first_char;
       GFXglyph *glyph  = &(((GFXglyph *)pgm_read_dword(&gfxFont->glyph))[c]);
       uint8_t  *bitmap = (uint8_t *)pgm_read_dword(&gfxFont->bitmap);
 
