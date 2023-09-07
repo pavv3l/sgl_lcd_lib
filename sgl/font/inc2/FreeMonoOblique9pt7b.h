@@ -179,7 +179,7 @@ const SGLglyph FreeMonoOblique9pt7bGlyphs[] = {
     {969, 6, 13, 11, 3, -10},  // 0x7D '}'
     {979, 7, 3, 11, 3, -6}};   // 0x7E '~'
 
-const SGLfont FreeMonoOblique9pt7b = {
+const SGLFont FreeMonoOblique9pt7b = {
     (uint8_t *)FreeMonoOblique9pt7bBitmaps,
     (SGLglyph *)FreeMonoOblique9pt7bGlyphs, 0x20, 0x7E, 18};
 

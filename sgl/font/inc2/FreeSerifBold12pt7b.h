@@ -263,7 +263,7 @@ const SGLglyph FreeSerifBold12pt7bGlyphs[] = {
     {1964, 8, 21, 9, 2, -16},   // 0x7D '}'
     {1985, 11, 4, 12, 1, -7}};  // 0x7E '~'
 
-const SGLfont FreeSerifBold12pt7b = {
+const SGLFont FreeSerifBold12pt7b = {
     (uint8_t *)FreeSerifBold12pt7bBitmaps,
     (SGLglyph *)FreeSerifBold12pt7bGlyphs, 0x20, 0x7E, 29};
 

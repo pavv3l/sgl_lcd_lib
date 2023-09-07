@@ -492,7 +492,7 @@ const SGLglyph FreeSerifBoldItalic18pt7bGlyphs[] = {
     {4668, 15, 32, 12, -5, -24}, // 0x7D '}'
     {4728, 16, 5, 20, 2, -11}};  // 0x7E '~'
 
-const SGLfont FreeSerifBoldItalic18pt7b = {
+const SGLFont FreeSerifBoldItalic18pt7b = {
     (uint8_t *)FreeSerifBoldItalic18pt7bBitmaps,
     (SGLglyph *)FreeSerifBoldItalic18pt7bGlyphs, 0x20, 0x7E, 42};
 

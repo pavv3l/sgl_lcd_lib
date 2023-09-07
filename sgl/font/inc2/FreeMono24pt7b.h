@@ -569,7 +569,7 @@ const SGLglyph FreeMono24pt7bGlyphs[] = {
     {5596, 11, 34, 28, 9, -27}, // 0x7D '}'
     {5643, 20, 6, 28, 4, -15}}; // 0x7E '~'
 
-const SGLfont FreeMono24pt7b = {(uint8_t *)FreeMono24pt7bBitmaps,
+const SGLFont FreeMono24pt7b = {(uint8_t *)FreeMono24pt7bBitmaps,
                                         (SGLglyph *)FreeMono24pt7bGlyphs, 0x20,
                                         0x7E, 47};
 

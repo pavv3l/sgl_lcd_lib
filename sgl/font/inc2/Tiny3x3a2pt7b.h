@@ -123,7 +123,7 @@ const SGLglyph Tiny3x3a2pt7bGlyphs[] = {
     {139, 3, 3, 4, 0, -2},  // 0x7D '}'
     {141, 3, 2, 4, 0, -2}}; // 0x7E '~'
 
-const SGLfont Tiny3x3a2pt7b = {(uint8_t *)Tiny3x3a2pt7bBitmaps,
+const SGLFont Tiny3x3a2pt7b = {(uint8_t *)Tiny3x3a2pt7bBitmaps,
                                        (SGLglyph *)Tiny3x3a2pt7bGlyphs, 0x20,
                                        0x7E, 4};
 

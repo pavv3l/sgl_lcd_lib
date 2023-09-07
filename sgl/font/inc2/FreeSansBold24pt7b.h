@@ -776,7 +776,7 @@ const SGLglyph FreeSansBold24pt7bGlyphs[] = {
     {8052, 13, 43, 18, 3, -33},  // 0x7D '}'
     {8122, 21, 8, 23, 1, -14}};  // 0x7E '~'
 
-const SGLfont FreeSansBold24pt7b = {
+const SGLFont FreeSansBold24pt7b = {
     (uint8_t *)FreeSansBold24pt7bBitmaps, (SGLglyph *)FreeSansBold24pt7bGlyphs,
     0x20, 0x7E, 56};
 

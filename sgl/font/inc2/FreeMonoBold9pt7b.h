@@ -181,7 +181,7 @@ const SGLglyph FreeMonoBold9pt7bGlyphs[] = {
     {988, 4, 14, 11, 4, -10},  // 0x7D '}'
     {995, 9, 4, 11, 1, -6}};   // 0x7E '~'
 
-const SGLfont FreeMonoBold9pt7b = {(uint8_t *)FreeMonoBold9pt7bBitmaps,
+const SGLFont FreeMonoBold9pt7b = {(uint8_t *)FreeMonoBold9pt7bBitmaps,
                                            (SGLglyph *)FreeMonoBold9pt7bGlyphs,
                                            0x20, 0x7E, 18};
 

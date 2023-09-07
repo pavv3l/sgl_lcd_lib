@@ -184,7 +184,7 @@ namespace sgl
         uint16_t x_act2 = 0;
         uint16_t y_act2 = 0;
 
-        SGLfont* _font;
+        SGLFont* _font;
 
         uint8_t getTextBounds(char c, uint16_t x, uint16_t y, int8_t size);
         uint8_t getCharBounds(const char* c, uint16_t x, uint16_t y, uint8_t size);

@@ -470,5 +470,5 @@ const SGLglyph TomThumbGlyphs[] = {
 #endif                     /* (TOMTHUMB_USE_EXTENDED) */
 };
 
-const SGLfont TomThumb = {(uint8_t *)TomThumbBitmaps,
+const SGLFont TomThumb = {(uint8_t *)TomThumbBitmaps,
                                   (SGLglyph *)TomThumbGlyphs, 0x20, 0x7E, 6};

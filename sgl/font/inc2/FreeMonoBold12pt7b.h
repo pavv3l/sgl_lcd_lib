@@ -242,7 +242,7 @@ const SGLglyph FreeMonoBold12pt7bGlyphs[] = {
     {1707, 7, 19, 14, 4, -14},  // 0x7D '}'
     {1724, 12, 4, 14, 1, -7}};  // 0x7E '~'
 
-const SGLfont FreeMonoBold12pt7b = {
+const SGLFont FreeMonoBold12pt7b = {
     (uint8_t *)FreeMonoBold12pt7bBitmaps, (SGLglyph *)FreeMonoBold12pt7bGlyphs,
     0x20, 0x7E, 24};
 

@@ -122,7 +122,7 @@ const SGLglyph Org_01Glyphs[] = {{0, 0, 0, 6, 0, 1},     // 0x20 ' '
                                          {267, 3, 5, 4, 0, -4},  // 0x7D '}'
                                          {269, 5, 3, 6, 0, -3}}; // 0x7E '~'
 
-const SGLfont Org_01 = {(uint8_t *)Org_01Bitmaps,
+const SGLFont Org_01 = {(uint8_t *)Org_01Bitmaps,
                                 (SGLglyph *)Org_01Glyphs, 0x20, 0x7E, 7};
 
 // Approx. 943 bytes

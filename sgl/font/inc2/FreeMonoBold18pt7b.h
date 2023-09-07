@@ -415,7 +415,7 @@ const SGLglyph FreeMonoBold18pt7bGlyphs[] = {
     {3762, 10, 27, 21, 6, -21},  // 0x7D '}'
     {3796, 17, 8, 21, 2, -13}};  // 0x7E '~'
 
-const SGLfont FreeMonoBold18pt7b = {
+const SGLFont FreeMonoBold18pt7b = {
     (uint8_t *)FreeMonoBold18pt7bBitmaps, (SGLglyph *)FreeMonoBold18pt7bGlyphs,
     0x20, 0x7E, 35};
 

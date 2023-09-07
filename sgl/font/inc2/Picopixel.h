@@ -114,7 +114,7 @@ const SGLglyph PicopixelGlyphs[] = {{0, 0, 0, 2, 0, 1},     // 0x20 ' '
                                             {177, 3, 5, 4, 0, -4},  // 0x7D '}'
                                             {179, 4, 2, 5, 0, -3}}; // 0x7E '~'
 
-const SGLfont Picopixel = {(uint8_t *)PicopixelBitmaps,
+const SGLFont Picopixel = {(uint8_t *)PicopixelBitmaps,
                                    (SGLglyph *)PicopixelGlyphs, 0x20, 0x7E, 7};
 
 // Approx. 852 bytes

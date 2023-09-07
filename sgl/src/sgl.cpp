@@ -371,7 +371,7 @@ void SGL::drawChar(char c, uint16_t x, uint16_t y) // for the new font
 
 void SGL::drawString(const unsigned char* c, uint16_t x, uint16_t y)
 {
-    uint lenstr = strlen(c);
+    uint lenstr = strlen(reinterpret_cast<const char*>(c));
     for(int i = 0; i < lenstr ; ++c ++i) {
         if(x > width_ - _font->get_char_width(*c-32) && _font->wrap == false)
         {
@@ -397,7 +397,7 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_
 {
     c -= _font->first_char;
     //
-    SGLglyph* glyph = _font->glyph[c];
+    SGLglyph* glyph = &(_font->glyph[c]);
     //
     uint8_t *bitmap = _font->font_array;
     uint16_t bo = glyph->bitmapOffset;
