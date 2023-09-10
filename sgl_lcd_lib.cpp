@@ -3,7 +3,6 @@
 #include "hardware/spi.h"
 //#include "sgl_st8779vw.h"
 #include "sgl_ili9341.h"
-#include "Arial12x12.h"
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -96,28 +95,6 @@ int main()
     gpio_init(LCD_RST);
     gpio_set_dir(LCD_RST, GPIO_OUT);
     gpio_put(LCD_RST, 0);
-
-    Arial12x12Font font12;
-
-    sgl::ili9341::SGLILI9341 lcd(LCD_WIDTH, LCD_HEIGHT, &lcdInterface, LCD_DC, LCD_CS, LCD_RST);
-    lcd.setFont(&font12);
-    font12.color = ILI9341_DARKGREY;
-    lcd.init();
-    uint16_t color = ILI9341_WHITE;
-    u_int32_t xx = 10;
-    lcd.fill_screen(ILI9341_WHITE);
-    while(true)
-    {
-        lcd.drawString("HELLO WORLD", 10, xx);
-        sleep_ms(5000);
-        color += 0x0011;
-        xx += 50;
-        if(xx > 310)
-        {
-            xx = 0;
-        }
-
-    }
 
     return 0;
 }

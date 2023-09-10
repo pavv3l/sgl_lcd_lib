@@ -20,7 +20,7 @@ class SGLILI9341: public SGL
     void send_data16(uint16_t data);
     void send_command(uint8_t cmd);
     void send_command_parameter(uint8_t param);
-    void drawPixel(uint16_t x, uint16_t y, uint16_t color = ILI9341_WHITE, Mode mode = Mode::pixelAND) override;
+    void drawPixel(uint16_t x, uint16_t y, uint16_t color = ILI9341_WHITE, Mode mode = Mode::pixelAND);
     void drawScreen();
     void set_active_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
     void fill_screen(uint16_t color = WHITE);

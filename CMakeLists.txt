@@ -7,10 +7,15 @@ set(APP_NAME lcd_lib)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+set(BUILD_UT ON)
+
 if(${BUILD_UT})
 
+set(CMAKE_C_COMPILER "gcc")
+set(MAKE_CXX_COMPILER "g++")
+
 message(INFO " BUILD UT FOR LINUX")
-add_subdirectory(external/googletest-release-1.12.1)
+add_subdirectory(external/gtest)
 
 else()
 
@@ -26,6 +31,8 @@ project(${APP_NAME} C CXX ASM)
 if(${BUILD_UT})
 
 add_subdirectory(sgl)
+add_subdirectory(sgl_hal)
+add_subdirectory(drivers)
 
 else()
 

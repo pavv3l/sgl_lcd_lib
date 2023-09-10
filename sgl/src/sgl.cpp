@@ -371,8 +371,9 @@ void SGL::drawChar(char c, uint16_t x, uint16_t y) // for the new font
 
 void SGL::drawString(const unsigned char* c, uint16_t x, uint16_t y)
 {
+/*
     uint lenstr = strlen(reinterpret_cast<const char*>(c));
-    for(int i = 0; i < lenstr ; ++c ++i) {
+    for(int i = 0; i < lenstr ; ++c,++i) {
         if(x > width_ - _font->get_char_width(*c-32) && _font->wrap == false)
         {
             return;
@@ -391,6 +392,7 @@ void SGL::drawString(const unsigned char* c, uint16_t x, uint16_t y)
         }
         x += _font->get_char_width(*c-32);
     }
+*/
 }
 
 void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y)
@@ -436,6 +438,7 @@ void SGL::drawChar_2(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_
 
 void SGL::drawChar_3(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_x, uint8_t size_y)
 {
+/*
     // Filter out bad characters not present in font
     if ((c >= _font->first_char) && (c <= _font->last_char))
     {
@@ -489,6 +492,7 @@ void SGL::drawChar_3(uchar c, uint16_t x, uint16_t y, int8_t size, uint8_t size_
         }
       }
     }
+*/
 }
 void SGL::drawString_2(const unsigned char* c, uint16_t x, uint16_t y)
 {

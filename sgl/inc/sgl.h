@@ -136,21 +136,21 @@ namespace sgl
 #endif
         }
 
-        virtual void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, Mode mode = Mode::pixelAND) = 0;
-        virtual void drawScreen() = 0;
-        virtual void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+        void drawPixel(uint16_t x, uint16_t y, const uint16_t color = WHITE, Mode mode = Mode::pixelAND);
+        void drawScreen();
+        void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        virtual void drawLine2(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+        void drawLine2(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        virtual void drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
+        void drawHorizontalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        virtual void drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
+        void drawVerticalLine(uint16_t x0, uint16_t y0, int16_t len,
             const uint16_t color = WHITE, const Mode mode = Mode::pixelAND);
-        virtual void drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height,
+        void drawRectangle(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        virtual void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+        void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             uint16_t x2, uint16_t y2, const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
-        virtual void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
+        void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius,
             const uint16_t color = WHITE, const Fill fill = Fill::hole, const Mode mode = Mode::pixelAND);
 
         uint16_t getXOffset() const;
